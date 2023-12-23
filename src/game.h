@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdint>
+#include <vector>
 
 class Renderer;
 struct RenderEvent;
@@ -13,7 +14,7 @@ struct MouseWheelEvent;
 struct KeyPressEvent;
 struct KeyReleaseEvent;
 
-class Game
+class Game final
 {
 public:
     template<typename MBS, typename KS>
@@ -21,12 +22,15 @@ public:
       : mouse_button_states(mouse_button_states)
       , keyboard_state(keyboard_state)
     {}
+
     ~Game();
 
     Game(const Game &other)            = delete;
     Game(Game &&other)                 = delete;
     Game &operator=(const Game &other) = delete;
     Game &operator=(Game &&other)      = delete;
+
+    void load_assets(Renderer &renderer);
 
     void render(Renderer &renderer, const RenderEvent &event);
 
@@ -52,6 +56,8 @@ private:
 
     const std::uint8_t *const mouse_button_states;
     const std::uint8_t *const keyboard_state;
+
+    std::vector<std::int32_t> image_ids;
 
     float       fps_timer     = 0.0f;
     std::size_t frame_counter = 0;

@@ -8,9 +8,27 @@
 Game::~Game()
 {}
 
+void Game::load_assets(Renderer &renderer)
+{
+    image_ids.push_back(
+        renderer.load_image(static_cast<const std::uint8_t *>(resource_c_plus_plus_logo),
+                            resource_c_plus_plus_logo_size));
+}
+
 void Game::render(Renderer &renderer, const RenderEvent &event)
 {
-    fps_timer += event.seconds_elapsed;
+    renderer.set_color({ 235, 128, 149, 255 });
+    renderer.clear();
+
+    const auto width  = renderer.width();
+    const auto height = renderer.height();
+
+    const auto logo_width  = width / 2;
+    const auto logo_height = height / 2;
+
+    renderer.draw_image(image_ids[0], logo_width / 2, logo_height / 2, logo_width, logo_height);
+
+    fps_timer += event.seconds_per_frame;
     ++frame_counter;
 
     if (fps_timer >= 1.0F)

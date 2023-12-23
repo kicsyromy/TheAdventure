@@ -22,6 +22,7 @@ target_compile_definitions (
     ${PROJECT_ID}_stb INTERFACE
     -DSTBI_NO_HDR
     -DSTBI_WINDOWS_UTF8
+    -DSTBI_NO_STDIO
 )
 
 if (NOT STB_POPULATED)

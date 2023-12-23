@@ -3,15 +3,21 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
-Renderer::Image::Image(SDL_Renderer *renderer, const std::string_view &path)
+Renderer::Image::Image(SDL_Renderer *renderer, const std::uint8_t *data, std::size_t size)
 {
     std::int32_t channels;
-    pixels = stbi_load(path.data(), &width, &height, &channels, 4);
+    pixels =
+        stbi_load_from_memory(data, static_cast<std::int32_t>(size), &width, &height, &channels, 4);
 
     assert(pixels != nullptr);
     assert(channels == 4);
 
-    auto *surface = SDL_CreateRGBSurfaceFrom(pixels, width, height, 32, width * 4, 0, 0, 0, 0);
+    auto *surface = SDL_CreateRGBSurfaceWithFormatFrom(pixels,
+                                                       width,
+                                                       height,
+                                                       32,
+                                                       width * 4,
+                                                       SDL_PIXELFORMAT_RGBA32);
     assert(surface != nullptr);
 
     texture = SDL_CreateTextureFromSurface(renderer, surface);
@@ -26,7 +32,7 @@ Renderer::Image::~Image()
 }
 
 Renderer::Renderer(SDL_Window *window)
-  : renderer{ SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC) }
+  : renderer{ SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED) }
 {}
 
 Renderer::~Renderer()
@@ -34,9 +40,28 @@ Renderer::~Renderer()
     SDL_DestroyRenderer(renderer);
 }
 
+std::int32_t Renderer::width() const
+{
+    std::int32_t width;
+    SDL_GetRendererOutputSize(renderer, &width, nullptr);
+    return width;
+}
+
+std::int32_t Renderer::height() const
+{
+    std::int32_t height;
+    SDL_GetRendererOutputSize(renderer, nullptr, &height);
+    return height;
+}
+
 void Renderer::set_color(const Color &color)
 {
     SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, color.a);
+}
+
+void Renderer::clear()
+{
+    SDL_RenderClear(renderer);
 }
 
 void Renderer::put_pixel(std::int32_t x, std::int32_t y)
@@ -82,8 +107,13 @@ void Renderer::draw_image(std::int32_t image_id,
     SDL_RenderCopy(renderer, image.texture, nullptr, &destRect);
 }
 
-std::int32_t Renderer::load_image(const std::string_view &path)
+std::int32_t Renderer::load_image(const std::uint8_t *data, std::size_t size)
 {
-    images.emplace_back(this->renderer, path);
+    images.emplace_back(this->renderer, data, size);
     return static_cast<std::int32_t>(images.size()) - 1;
+}
+
+void Renderer::present()
+{
+    SDL_RenderPresent(renderer);
 }

@@ -14,13 +14,13 @@ struct Color
     std::uint8_t a;
 };
 
-class Renderer
+class Renderer final
 {
 private:
     class Image
     {
     public:
-        Image(SDL_Renderer *renderer, const std::string_view &path);
+        Image(SDL_Renderer *renderer, const std::uint8_t *data, std::size_t size);
         ~Image();
 
         Image(const Image &)            = delete;
@@ -44,7 +44,11 @@ public:
     Renderer &operator=(const Renderer &) = delete;
     Renderer &operator=(Renderer &&)      = delete;
 
+    int32_t width() const;
+    int32_t height() const;
+
     void         set_color(const Color &color);
+    void         clear();
     void         put_pixel(std::int32_t x, std::int32_t y);
     void         draw_line(std::int32_t x0, std::int32_t y0, std::int32_t x1, std::int32_t y1);
     void         draw_rect(std::int32_t x, std::int32_t y, std::int32_t width, std::int32_t height);
@@ -54,7 +58,9 @@ public:
                             std::int32_t y,
                             std::int32_t width  = -1,
                             std::int32_t height = -1);
-    std::int32_t load_image(const std::string_view &path);
+    std::int32_t load_image(const std::uint8_t *data, std::size_t size);
+
+    void present();
 
 private:
     SDL_Renderer      *renderer{ nullptr };

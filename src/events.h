@@ -270,57 +270,58 @@ enum class MouseButton : std::uint8_t
 };
 static constexpr std::size_t MOUSE_BUTTON_COUNT = static_cast<std::size_t>(MouseButton::Count);
 
-struct KeyPressEvent
+struct KeyPressEvent final
 {
     KeyCode key_code;
 };
 
-struct KeyReleaseEvent
+struct KeyReleaseEvent final
 {
     KeyCode key_code;
 };
 
-struct MouseMoveEvent
+struct MouseMoveEvent final
 {
     std::int32_t x;
     std::int32_t y;
 };
 
-struct MouseButtonPressEvent
+struct MouseButtonPressEvent final
 {
     std::int32_t x;
     std::int32_t y;
     MouseButton  button;
 };
 
-struct MouseButtonReleaseEvent
+struct MouseButtonReleaseEvent final
 {
     std::int32_t x;
     std::int32_t y;
     MouseButton  button;
 };
 
-struct MouseWheelEvent
+struct MouseWheelEvent final
 {
     std::int32_t x;
     std::int32_t y;
     bool         flipped;
 };
 
-struct WindowMoveEvent
+struct WindowMoveEvent final
 {
     std::int32_t x;
     std::int32_t y;
 };
 
-struct WindowResizeEvent
+struct WindowResizeEvent final
 {
     std::int32_t width;
     std::int32_t height;
 };
 
-struct RenderEvent
+struct RenderEvent final
 {
-    float       seconds_elapsed;
+    float       seconds_per_frame;
+    float       seconds_since_start;
     std::size_t frames_rendered;
 };

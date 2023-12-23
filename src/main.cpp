@@ -3,6 +3,7 @@
 #include "renderer.h"
 
 #include <SDL2/SDL.h>
+#include <fmt/format.h>
 
 #include <array>
 #include <chrono>
@@ -17,7 +18,8 @@ int main()
     const auto *keyboard_state      = SDL_GetKeyboardState(nullptr);
     auto        mouse_button_states = std::array<std::uint8_t, MOUSE_BUTTON_COUNT>{};
 
-    auto prev_time = std::chrono::high_resolution_clock::now();
+    auto       prev_time  = std::chrono::high_resolution_clock::now();
+    const auto start_time = prev_time;
 
     auto event = SDL_Event{};
     std::memset(&event, 0, sizeof(event));
@@ -34,10 +36,11 @@ int main()
     auto *window   = SDL_CreateWindow(PROJECT_NAME,
                                     SDL_WINDOWPOS_UNDEFINED,
                                     SDL_WINDOWPOS_UNDEFINED,
-                                    640,
-                                    480,
+                                    800,
+                                    800,
                                     SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI);
     auto  renderer = Renderer{ window };
+    game.load_assets(renderer);
 
     auto quit = false;
     while (!quit)
@@ -80,7 +83,6 @@ int main()
                     game.on_window_moved(WindowMoveEvent{ event.window.data1, event.window.data2 });
                     break;
                 }
-                case SDL_WindowEventID::SDL_WINDOWEVENT_RESIZED:
                 case SDL_WindowEventID::SDL_WINDOWEVENT_SIZE_CHANGED: {
                     game.on_window_resized(
                         WindowResizeEvent{ event.window.data1, event.window.data2 });
@@ -183,12 +185,19 @@ int main()
         const auto curr_time = std::chrono::high_resolution_clock::now();
         const auto elapsed =
             static_cast<float>(
-                std::chrono::duration_cast<std::chrono::milliseconds>(curr_time - prev_time)
+                std::chrono::duration_cast<std::chrono::nanoseconds>(curr_time - prev_time)
                     .count()) /
-            1000.0F;
+            1000000000.0F;
         prev_time = curr_time;
 
-        game.render(renderer, RenderEvent{ elapsed, frames_rendered_counter++ });
+        game.render(
+            renderer,
+            RenderEvent{ elapsed,
+                         static_cast<float>(std::chrono::duration_cast<std::chrono::milliseconds>(
+                                                curr_time - start_time)
+                                                .count()),
+                         frames_rendered_counter++ });
+        renderer.present();
     }
 
     SDL_DestroyWindow(window);
