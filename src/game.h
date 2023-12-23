@@ -1,0 +1,58 @@
+#pragma once
+
+#include <cstdint>
+
+class Renderer;
+struct RenderEvent;
+struct WindowMoveEvent;
+struct WindowResizeEvent;
+struct MouseMoveEvent;
+struct MouseButtonPressEvent;
+struct MouseButtonReleaseEvent;
+struct MouseWheelEvent;
+struct KeyPressEvent;
+struct KeyReleaseEvent;
+
+class Game
+{
+public:
+    template<typename MBS, typename KS>
+    Game(const MBS &mouse_button_states, const KS &keyboard_state)
+      : mouse_button_states(mouse_button_states)
+      , keyboard_state(keyboard_state)
+    {}
+    ~Game();
+
+    Game(const Game &other)            = delete;
+    Game(Game &&other)                 = delete;
+    Game &operator=(const Game &other) = delete;
+    Game &operator=(Game &&other)      = delete;
+
+    void render(Renderer &renderer, const RenderEvent &event);
+
+    void on_window_shown();
+    void on_window_hidden();
+    void on_window_moved(const WindowMoveEvent &event);
+    void on_window_resized(const WindowResizeEvent &event);
+    void on_window_focus_gained();
+    void on_window_focus_lost();
+    void on_window_closed();
+    void on_window_mouse_entered();
+    void on_window_mouse_left();
+    void on_mouse_moved(const MouseMoveEvent &event);
+    void on_mouse_button_pressed(const MouseButtonPressEvent &event);
+    void on_mouse_button_released(const MouseButtonReleaseEvent &event);
+    void on_mouse_wheel(const MouseWheelEvent &event);
+    void on_key_pressed(const KeyPressEvent &event);
+    void on_key_released(const KeyReleaseEvent &event);
+
+private:
+    bool is_mouse_button_pressed(std::uint8_t button) const;
+    bool is_key_pressed(std::uint16_t key_code) const;
+
+    const std::uint8_t *const mouse_button_states;
+    const std::uint8_t *const keyboard_state;
+
+    float       fps_timer     = 0.0f;
+    std::size_t frame_counter = 0;
+};
