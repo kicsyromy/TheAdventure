@@ -6,7 +6,7 @@
 Renderer::Image::Image(SDL_Renderer *renderer, const std::uint8_t *data, std::size_t size)
 {
     std::int32_t channels;
-    pixels =
+    auto         pixels =
         stbi_load_from_memory(data, static_cast<std::int32_t>(size), &width, &height, &channels, 4);
 
     assert(pixels != nullptr);
@@ -23,12 +23,12 @@ Renderer::Image::Image(SDL_Renderer *renderer, const std::uint8_t *data, std::si
     texture = SDL_CreateTextureFromSurface(renderer, surface);
     assert(texture != nullptr);
     SDL_FreeSurface(surface);
+    stbi_image_free(pixels);
 }
 
 Renderer::Image::~Image()
 {
     SDL_DestroyTexture(texture);
-    stbi_image_free(pixels);
 }
 
 Renderer::Renderer(SDL_Window *window)

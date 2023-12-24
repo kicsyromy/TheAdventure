@@ -10,25 +10,52 @@ Game::~Game()
 
 void Game::load_assets(Renderer &renderer)
 {
-    image_ids.push_back(
-        renderer.load_image(static_cast<const std::uint8_t *>(resource_c_plus_plus_logo),
-                            resource_c_plus_plus_logo_size));
+    res_cpp_logo = renderer.load_image(static_cast<const std::uint8_t *>(resource_c_plus_plus_logo),
+                                       resource_c_plus_plus_logo_size);
 }
 
 void Game::render(Renderer &renderer, const RenderEvent &event)
 {
-    renderer.set_color({ 235, 128, 149, 255 });
+    const auto red =
+        static_cast<std::uint8_t>(255.F * ((std::sin(total_seconds_elapsed) + 1.F) / 2.F));
+    const auto green =
+        static_cast<std::uint8_t>(255.F * ((std::cos(total_seconds_elapsed) + 1.F) / 2.F));
+
+    renderer.set_color({ red, green, 149, 255 });
     renderer.clear();
 
-    const auto width  = renderer.width();
-    const auto height = renderer.height();
+    if (!is_key_pressed(KeyCode::Space))
+    {
+        logo_x += sign_x * delta_x * event.seconds_elapsed;
+        logo_y += sign_y * delta_y * event.seconds_elapsed;
 
-    const auto logo_width  = width / 2;
-    const auto logo_height = height / 2;
+        if (logo_x >= renderer.width() - logo_width)
+        {
+            logo_x = renderer.width() - logo_width;
+            sign_x = -1.F;
+        }
+        else if (logo_x <= 0)
+        {
+            logo_x = 0;
+            sign_x = 1.F;
+        }
 
-    renderer.draw_image(image_ids[0], logo_width / 2, logo_height / 2, logo_width, logo_height);
+        if (logo_y >= renderer.height() - logo_height)
+        {
+            logo_y = renderer.height() - logo_height;
+            sign_y = -1.F;
+        }
+        else if (logo_y <= 0)
+        {
+            logo_y = 0;
+            sign_y = 1.F;
+        }
+    }
 
-    fps_timer += event.seconds_per_frame;
+    renderer.draw_image(res_cpp_logo, logo_x, logo_y, logo_width, logo_height);
+
+    fps_timer += event.seconds_elapsed;
+    total_seconds_elapsed += event.seconds_elapsed;
     ++frame_counter;
 
     if (fps_timer >= 1.0F)
@@ -120,12 +147,12 @@ void Game::on_key_released(const KeyReleaseEvent &event)
     fmt::print("Key {} released\n", static_cast<std::size_t>(event.key_code));
 }
 
-bool Game::is_mouse_button_pressed(std::uint8_t button) const
+bool Game::is_mouse_button_pressed(MouseButton button) const
 {
     return mouse_button_states[static_cast<std::size_t>(button)] != 0;
 }
 
-bool Game::is_key_pressed(std::uint16_t key_code) const
+bool Game::is_key_pressed(KeyCode key_code) const
 {
     return keyboard_state[static_cast<std::size_t>(key_code)] != 0;
 }

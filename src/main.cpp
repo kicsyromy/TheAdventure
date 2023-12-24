@@ -1,6 +1,7 @@
 #include "events.h"
 #include "game.h"
 #include "renderer.h"
+#include "sound.h"
 
 #include <SDL2/SDL.h>
 #include <fmt/format.h>
@@ -31,6 +32,12 @@ int main()
         SDL_LogCritical(SDL_LOG_CATEGORY_SYSTEM, "Unable to initialize SDL: %s", SDL_GetError());
         return 1;
     }
+
+    auto sound = Sound{};
+    sound.play(0);
+    SDL_Delay(1000);
+
+    std::srand(std::time(nullptr));
 
     auto  game     = Game{ mouse_button_states.data(), keyboard_state };
     auto *window   = SDL_CreateWindow(PROJECT_NAME,
@@ -190,13 +197,7 @@ int main()
             1000000000.0F;
         prev_time = curr_time;
 
-        game.render(
-            renderer,
-            RenderEvent{ elapsed,
-                         static_cast<float>(std::chrono::duration_cast<std::chrono::milliseconds>(
-                                                curr_time - start_time)
-                                                .count()),
-                         frames_rendered_counter++ });
+        game.render(renderer, RenderEvent{ elapsed, frames_rendered_counter++ });
         renderer.present();
     }
 

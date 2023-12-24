@@ -1,5 +1,7 @@
 #pragma once
 
+#include "codes.h"
+
 #include <cstdint>
 #include <vector>
 
@@ -51,14 +53,23 @@ public:
     void on_key_released(const KeyReleaseEvent &event);
 
 private:
-    bool is_mouse_button_pressed(std::uint8_t button) const;
-    bool is_key_pressed(std::uint16_t key_code) const;
+    bool is_mouse_button_pressed(MouseButton button) const;
+    bool is_key_pressed(KeyCode key_code) const;
 
     const std::uint8_t *const mouse_button_states;
     const std::uint8_t *const keyboard_state;
 
-    std::vector<std::int32_t> image_ids;
+    float       total_seconds_elapsed{ 0.F };
+    float       fps_timer{ 0.F };
+    std::size_t frame_counter{ 0 };
 
-    float       fps_timer     = 0.0f;
-    std::size_t frame_counter = 0;
+    std::int32_t       res_cpp_logo;
+    const std::int32_t logo_width{ 200 };
+    const std::int32_t logo_height{ 200 };
+    float              logo_x{ 200.F };
+    float              sign_x{ 1.F };
+    float              logo_y{ 200.F };
+    float              sign_y{ 1.F };
+    const float        delta_x{ static_cast<float>(rand() % 200) + 70.F };
+    const float        delta_y{ static_cast<float>(rand() % 200) + 70.F };
 };

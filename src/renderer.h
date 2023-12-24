@@ -31,8 +31,7 @@ private:
         std::int32_t width;
         std::int32_t height;
 
-        std::uint8_t *pixels;
-        SDL_Texture  *texture;
+        SDL_Texture *texture;
     };
 
 public:
