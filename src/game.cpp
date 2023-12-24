@@ -12,6 +12,9 @@ void Game::load_assets(Renderer &renderer)
 {
     res_cpp_logo = renderer.load_image(static_cast<const std::uint8_t *>(resource_c_plus_plus_logo),
                                        resource_c_plus_plus_logo_size);
+
+    res_ding =
+        sound.load_sample(static_cast<const std::uint8_t *>(resource_ding), resource_ding_size);
 }
 
 void Game::render(Renderer &renderer, const RenderEvent &event)
@@ -33,22 +36,30 @@ void Game::render(Renderer &renderer, const RenderEvent &event)
         {
             logo_x = renderer.width() - logo_width;
             sign_x = -1.F;
+
+            sound.play(res_ding);
         }
         else if (logo_x <= 0)
         {
             logo_x = 0;
             sign_x = 1.F;
+
+            sound.play(res_ding);
         }
 
         if (logo_y >= renderer.height() - logo_height)
         {
             logo_y = renderer.height() - logo_height;
             sign_y = -1.F;
+
+            sound.play(res_ding);
         }
         else if (logo_y <= 0)
         {
             logo_y = 0;
             sign_y = 1.F;
+
+            sound.play(res_ding);
         }
     }
 

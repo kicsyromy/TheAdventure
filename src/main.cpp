@@ -1,6 +1,7 @@
 #include "events.h"
 #include "game.h"
 #include "renderer.h"
+#include "resources.h"
 #include "sound.h"
 
 #include <SDL2/SDL.h>
@@ -34,7 +35,6 @@ int main()
     }
 
     auto sound = Sound{};
-    sound.play(0);
 
     std::srand(std::time(nullptr));
 

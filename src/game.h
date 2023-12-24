@@ -1,8 +1,10 @@
 #pragma once
 
 #include "codes.h"
+#include "sound.h"
 
 #include <cstdint>
+#include <random>
 #include <vector>
 
 class Renderer;
@@ -59,6 +61,8 @@ private:
     const std::uint8_t *const mouse_button_states;
     const std::uint8_t *const keyboard_state;
 
+    Sound sound;
+
     float       total_seconds_elapsed{ 0.F };
     float       fps_timer{ 0.F };
     std::size_t frame_counter{ 0 };
@@ -72,4 +76,6 @@ private:
     float              sign_y{ 1.F };
     const float        delta_x{ static_cast<float>(rand() % 200) + 70.F };
     const float        delta_y{ static_cast<float>(rand() % 200) + 70.F };
+
+    std::int32_t res_ding;
 };
