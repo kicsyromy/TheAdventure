@@ -35,7 +35,6 @@ int main()
 
     auto sound = Sound{};
     sound.play(0);
-    SDL_Delay(1000);
 
     std::srand(std::time(nullptr));
 

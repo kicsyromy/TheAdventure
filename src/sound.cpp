@@ -38,6 +38,7 @@ Sound::Sound()
     assert(res != nullptr);
 
     spec.callback   = &Sound::audio_callback;
+    spec.userdata   = this;
     audio_device_id = SDL_OpenAudioDevice(nullptr, 0, &spec, nullptr, 0);
     assert(audio_device_id != 0);
 
@@ -64,28 +65,27 @@ void Sound::play(std::int32_t sample_id)
 void Sound::audio_callback(void *userdata, uint8_t *stream, int len)
 {
     auto &self = *static_cast<Sound *>(userdata);
-    fmt::print("Hello");
 
-    //    const auto &current_sample = self.audio_samples.at(self.current_sample);
-    for (auto &sample : self.audio_samples)
+    std::memset(stream, 0, static_cast<std::size_t>(len));
+
+    const auto &current_sample = self.audio_samples.at(self.current_sample);
+
+    if (self.current_sample_position >= current_sample.second)
     {
-        fmt::print("sjkhsdkf");
+        fmt::print("Done!\n");
+        SDL_PauseAudioDevice(self.audio_device_id, 1);
+        return;
     }
 
-    //    if (self.current_sample_position >= current_sample.second)
-    //    {
-    //        fmt::print("Done!\n");
-    //        return;
-    //    }
+    fmt::print("sample_pos: {}\n", self.current_sample_position);
 
-    //    fmt::print("sample_pos: {}\n", self.current_sample_position);
-
-    //    len = std::min(static_cast<std::int32_t>(current_sample.second -
-    //    self.current_sample_position),
-    //                   len);
-    //    SDL_MixAudio(stream,
-    //                 current_sample.first + self.current_sample_position,
-    //                 len,
-    //                 SDL_MIX_MAXVOLUME);
-    //    self.current_sample_position += len;
+    len = std::min(static_cast<std::int32_t>(current_sample.second - self.current_sample_position),
+                   len);
+    fmt::print("len : {}\n", len);
+    SDL_MixAudioFormat(stream,
+                       current_sample.first + self.current_sample_position,
+                       AUDIO_FORMAT,
+                       len,
+                       SDL_MIX_MAXVOLUME);
+    self.current_sample_position += len;
 }
