@@ -34,8 +34,6 @@ int main()
         return 1;
     }
 
-    auto sound = Sound{};
-
     std::srand(std::time(nullptr));
 
     auto  game     = Game{ mouse_button_states.data(), keyboard_state };
