@@ -12,7 +12,12 @@ private:
     struct Sample
     {
         std::int32_t id;
-        std::int32_t position;
+
+        std::unique_ptr<stb_vorbis, void (*)(stb_vorbis *)> data_stream;
+        std::int32_t                                        position;
+
+        std::uint32_t audio_device_id;
+        Sound        &self;
     };
 
 public:
@@ -30,8 +35,5 @@ public:
 private:
     static void audio_callback(void *userdata, uint8_t *stream, int len);
 
-    std::uint32_t                                                    audio_device_id;
-    std::vector<std::unique_ptr<stb_vorbis, void (*)(stb_vorbis *)>> loaded_samples;
-    std::vector<Sample>                                              playing_samples;
-    std::size_t                                                      current_sample;
+    std::vector<std::unique_ptr<Sample>> loaded_samples;
 };
