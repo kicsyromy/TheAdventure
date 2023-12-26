@@ -11,13 +11,9 @@ class Sound
 private:
     struct Sample
     {
-        std::int32_t id;
-
+        std::int32_t                                        id;
         std::unique_ptr<stb_vorbis, void (*)(stb_vorbis *)> data_stream;
-        std::int32_t                                        position;
-
-        std::uint32_t audio_device_id;
-        Sound        &self;
+        std::uint32_t                                       audio_device_id;
     };
 
 public:

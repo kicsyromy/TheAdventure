@@ -33,8 +33,7 @@ std::int32_t Sound::load_sample(const std::uint8_t *data, std::size_t size)
     assert(data_stream != nullptr);
 
     const auto sample_id = static_cast<std::int32_t>(loaded_samples.size());
-    auto       sample =
-        std::make_unique<Sample>(Sample{ sample_id, std::move(data_stream), 0, 0, *this });
+    auto       sample    = std::make_unique<Sample>(Sample{ sample_id, std::move(data_stream), 0 });
 
     auto spec = SDL_AudioSpec{};
     std::memset(&spec, 0, sizeof(SDL_AudioSpec));
@@ -51,6 +50,8 @@ std::int32_t Sound::load_sample(const std::uint8_t *data, std::size_t size)
 
     SDL_PauseAudioDevice(sample->audio_device_id, 0);
 
+    const auto len = stb_vorbis_stream_length_in_samples(sample->data_stream.get());
+    stb_vorbis_seek(sample->data_stream.get(), len);
     loaded_samples.push_back(std::move(sample));
 
     return sample_id;
@@ -62,7 +63,7 @@ void Sound::play(std::int32_t sample_id)
 
     SDL_LockAudioDevice(sample->audio_device_id);
 
-    sample->position = 0;
+    stb_vorbis_seek_start(sample->data_stream.get());
 
     SDL_UnlockAudioDevice(sample->audio_device_id);
 }
@@ -70,19 +71,17 @@ void Sound::play(std::int32_t sample_id)
 void Sound::audio_callback(void *userdata, uint8_t *stream, int len)
 {
     auto &sample = *static_cast<Sample *>(userdata);
-    auto &self   = sample.self;
 
     std::memset(stream, 0, static_cast<std::size_t>(len));
 
-    if (sample.position >= stb_vorbis_stream_length_in_samples(sample.data_stream.get()))
+    if (sample.data_stream->current_loc >=
+        stb_vorbis_stream_length_in_samples(sample.data_stream.get()))
     {
         return;
     }
 
-    stb_vorbis_seek(sample.data_stream.get(), sample.position);
-    sample.position += stb_vorbis_get_samples_short_interleaved(
-        sample.data_stream.get(),
-        sample.data_stream->channels,
-        reinterpret_cast<std::int16_t *>(stream),
-        len / static_cast<std::int32_t>(sizeof(std::int16_t)));
+    stb_vorbis_get_samples_short_interleaved(sample.data_stream.get(),
+                                             sample.data_stream->channels,
+                                             reinterpret_cast<std::int16_t *>(stream),
+                                             len / static_cast<std::int32_t>(sizeof(std::int16_t)));
 }
