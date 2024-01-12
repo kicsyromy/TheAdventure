@@ -2,6 +2,7 @@ set (
     PROJECT_RESOURCES
         "res/c-plus-plus-logo.png"
         "res/ding.ogg"
+        "res/tilesets/grass.png"
 )
 
 set (RES_FIXED_PATH)

@@ -10,11 +10,9 @@ Game::~Game()
 
 void Game::load_assets(Renderer &renderer)
 {
-    res_cpp_logo = renderer.load_image(static_cast<const std::uint8_t *>(resource_c_plus_plus_logo),
-                                       resource_c_plus_plus_logo_size);
-
-    res_ding =
-        sound.load_sample(static_cast<const std::uint8_t *>(resource_ding), resource_ding_size);
+    res_cpp_logo   = renderer.load_image(resource_c_plus_plus_logo, resource_c_plus_plus_logo_size);
+    res_tile_grass = renderer.load_image(resource_grass, resource_grass_size);
+    res_ding       = sound.load_sample(resource_ding, resource_ding_size);
 }
 
 void Game::render(Renderer &renderer, const RenderEvent &event)
@@ -63,7 +61,8 @@ void Game::render(Renderer &renderer, const RenderEvent &event)
         }
     }
 
-    renderer.draw_image(res_cpp_logo, logo_x, logo_y, logo_width, logo_height);
+    // renderer.draw_image(res_cpp_logo, logo_x, logo_y, logo_width, logo_height);
+    renderer.draw_image(res_tile_grass, logo_x, logo_y, logo_width, logo_height);
 
     fps_timer += event.seconds_elapsed;
     total_seconds_elapsed += event.seconds_elapsed;
