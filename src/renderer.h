@@ -53,10 +53,14 @@ public:
     void         draw_rect(std::int32_t x, std::int32_t y, std::int32_t width, std::int32_t height);
     void         fill_rect(std::int32_t x, std::int32_t y, std::int32_t width, std::int32_t height);
     void         draw_image(std::int32_t image_id,
-                            std::int32_t x,
-                            std::int32_t y,
-                            std::int32_t width  = -1,
-                            std::int32_t height = -1);
+                            std::int32_t src_x,
+                            std::int32_t src_y,
+                            std::int32_t dest_x,
+                            std::int32_t dest_y,
+                            std::int32_t src_width   = -1,
+                            std::int32_t src_height  = -1,
+                            std::int32_t dest_width  = -1,
+                            std::int32_t dest_height = -1);
     std::int32_t load_image(const std::uint8_t *data, std::size_t size);
 
     void present();

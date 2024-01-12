@@ -67,17 +67,9 @@ private:
     float       fps_timer{ 0.F };
     std::size_t frame_counter{ 0 };
 
-    std::int32_t       res_cpp_logo;
-    const std::int32_t logo_width{ 64 };
-    const std::int32_t logo_height{ 64 };
-    float              logo_x{ 200.F };
-    float              sign_x{ 1.F };
-    float              logo_y{ 200.F };
-    float              sign_y{ 1.F };
-    const float        delta_x{ static_cast<float>(rand() % 200) + 70.F };
-    const float        delta_y{ static_cast<float>(rand() % 200) + 70.F };
+    std::int32_t res_hero;
+    std::uint8_t current_hero_frame{ 0 };
+    float        hero_frame_timer{ 0.F };
 
     std::int32_t res_tile_grass;
-
-    std::int32_t res_ding;
 };

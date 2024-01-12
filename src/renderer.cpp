@@ -87,24 +87,38 @@ void Renderer::fill_rect(std::int32_t x, std::int32_t y, std::int32_t width, std
 }
 
 void Renderer::draw_image(std::int32_t image_id,
-                          std::int32_t x,
-                          std::int32_t y,
-                          std::int32_t width,
-                          std::int32_t height)
+                          std::int32_t src_x,
+                          std::int32_t src_y,
+                          std::int32_t dest_x,
+                          std::int32_t dest_y,
+                          std::int32_t src_width,
+                          std::int32_t src_height,
+                          std::int32_t dest_width,
+                          std::int32_t dest_height)
 {
     const Image &image = images.at(image_id);
 
-    if (width == -1)
+    if (src_width == -1)
     {
-        width = image.width;
+        src_width = image.width - src_x;
     }
-    if (height == -1)
+    if (src_height == -1)
     {
-        height = image.height;
+        src_height = image.height - src_y;
     }
 
-    const auto destRect = SDL_Rect{ x, y, width, height };
-    SDL_RenderCopy(renderer, image.texture, nullptr, &destRect);
+    if (dest_width == -1)
+    {
+        dest_width = src_width;
+    }
+    if (dest_height == -1)
+    {
+        dest_height = src_height;
+    }
+
+    const auto srcRect  = SDL_Rect{ src_x, src_y, src_width, src_height };
+    const auto destRect = SDL_Rect{ dest_x, dest_y, dest_width, dest_height };
+    SDL_RenderCopy(renderer, image.texture, &srcRect, &destRect);
 }
 
 std::int32_t Renderer::load_image(const std::uint8_t *data, std::size_t size)

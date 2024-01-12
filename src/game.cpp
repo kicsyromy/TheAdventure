@@ -5,64 +5,40 @@
 
 #include <fmt/format.h>
 
+#include <iostream>
+
 Game::~Game()
 {}
 
 void Game::load_assets(Renderer &renderer)
 {
-    res_cpp_logo   = renderer.load_image(resource_c_plus_plus_logo, resource_c_plus_plus_logo_size);
     res_tile_grass = renderer.load_image(resource_grass, resource_grass_size);
-    res_ding       = sound.load_sample(resource_ding, resource_ding_size);
+    res_hero       = renderer.load_image(resource_player, resource_player_size);
 }
 
 void Game::render(Renderer &renderer, const RenderEvent &event)
 {
-    const auto red =
-        static_cast<std::uint8_t>(255.F * ((std::sin(total_seconds_elapsed) + 1.F) / 2.F));
-    const auto green =
-        static_cast<std::uint8_t>(255.F * ((std::cos(total_seconds_elapsed) + 1.F) / 2.F));
-
-    renderer.set_color({ red, green, 149, 255 });
+    renderer.set_color({ 127, 127, 127, 255 });
     renderer.clear();
 
-    if (!is_key_pressed(KeyCode::Space))
+    if (is_mouse_button_pressed(MouseButton::Primary))
     {
-        logo_x += sign_x * delta_x * event.seconds_elapsed;
-        logo_y += sign_y * delta_y * event.seconds_elapsed;
-
-        if (logo_x >= renderer.width() - logo_width)
-        {
-            logo_x = renderer.width() - logo_width;
-            sign_x = -1.F;
-
-            sound.play(res_ding);
-        }
-        else if (logo_x <= 0)
-        {
-            logo_x = 0;
-            sign_x = 1.F;
-
-            sound.play(res_ding);
-        }
-
-        if (logo_y >= renderer.height() - logo_height)
-        {
-            logo_y = renderer.height() - logo_height;
-            sign_y = -1.F;
-
-            sound.play(res_ding);
-        }
-        else if (logo_y <= 0)
-        {
-            logo_y = 0;
-            sign_y = 1.F;
-
-            sound.play(res_ding);
-        }
+        std::cout << "Renderer: Mouse button pressed\n";
     }
 
-    // renderer.draw_image(res_cpp_logo, logo_x, logo_y, logo_width, logo_height);
-    renderer.draw_image(res_tile_grass, logo_x, logo_y, logo_width, logo_height);
+    if (is_key_pressed(KeyCode::Space))
+    {
+        std::cout << "Renderer: Space pressed\n";
+    }
+
+    hero_frame_timer += event.seconds_elapsed;
+    if (hero_frame_timer >= 0.2F)
+    {
+        hero_frame_timer   = 0.F;
+        current_hero_frame = (current_hero_frame + 1) % 4;
+    }
+
+    renderer.draw_image(res_hero, 48 * current_hero_frame, 288, 0, 0, 48, 48, 144, 144);
 
     fps_timer += event.seconds_elapsed;
     total_seconds_elapsed += event.seconds_elapsed;
