@@ -22,13 +22,36 @@ Renderer::Image::Image(SDL_Renderer *renderer, const std::uint8_t *data, std::si
 
     texture = SDL_CreateTextureFromSurface(renderer, surface);
     assert(texture != nullptr);
+
     SDL_FreeSurface(surface);
     stbi_image_free(pixels);
 }
 
 Renderer::Image::~Image()
 {
-    SDL_DestroyTexture(texture);
+    if (texture != nullptr)
+    {
+        SDL_DestroyTexture(texture);
+    }
+}
+
+Renderer::Image::Image(Image &&other)
+  : width{ other.width }
+  , height{ other.height }
+  , texture{ other.texture }
+{
+    other.texture = nullptr;
+}
+
+Renderer::Image &Renderer::Image::operator=(Image &&other)
+{
+    width   = other.width;
+    height  = other.height;
+    texture = other.texture;
+
+    other.texture = nullptr;
+
+    return *this;
 }
 
 Renderer::Renderer(SDL_Window *window)

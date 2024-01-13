@@ -23,10 +23,10 @@ private:
         Image(SDL_Renderer *renderer, const std::uint8_t *data, std::size_t size);
         ~Image();
 
-        Image(const Image &)            = delete;
-        Image(Image &&)                 = default;
+        Image(const Image &) = delete;
+        Image(Image &&);
         Image &operator=(const Image &) = delete;
-        Image &operator=(Image &&)      = default;
+        Image &operator=(Image &&);
 
         std::int32_t width;
         std::int32_t height;

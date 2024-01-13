@@ -12,8 +12,8 @@ Game::~Game()
 
 void Game::load_assets(Renderer &renderer)
 {
-    res_tile_grass = renderer.load_image(resource_grass, resource_grass_size);
     res_hero       = renderer.load_image(resource_player, resource_player_size);
+    res_tile_grass = renderer.load_image(resource_grass, resource_grass_size);
 }
 
 void Game::render(Renderer &renderer, const RenderEvent &event)
