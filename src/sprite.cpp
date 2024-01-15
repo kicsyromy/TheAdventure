@@ -1,5 +1,7 @@
 #include "sprite.h"
 
+#include <cmath>
+
 Sprite::Sprite(const std::uint8_t *data, std::size_t size, Renderer &renderer)
   : m_width{ 0 }
   , m_height{ 0 }
