@@ -2,6 +2,7 @@
 
 #include "codes.h"
 #include "sound.h"
+#include "sprite.h"
 
 #include <cstdint>
 #include <random>
@@ -72,4 +73,6 @@ private:
     float        hero_frame_timer{ 0.F };
 
     std::int32_t res_tile_grass;
+
+    Sprite m_rock_in_water_06;
 };

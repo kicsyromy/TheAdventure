@@ -14,6 +14,11 @@ void Game::load_assets(Renderer &renderer)
 {
     res_hero       = renderer.load_image(resource_player, resource_player_size);
     res_tile_grass = renderer.load_image(resource_grass, resource_grass_size);
+
+    m_rock_in_water_06 =
+        Sprite{ resource_rock_in_water_06, resource_rock_in_water_06_size, renderer };
+    m_rock_in_water_06.scale_x() = 4.F;
+    m_rock_in_water_06.scale_y() = 4.F;
 }
 
 void Game::render(Renderer &renderer, const RenderEvent &event)
@@ -21,24 +26,27 @@ void Game::render(Renderer &renderer, const RenderEvent &event)
     renderer.set_color({ 127, 127, 127, 255 });
     renderer.clear();
 
-    if (is_mouse_button_pressed(MouseButton::Primary))
+    if (is_key_pressed(KeyCode::Up))
     {
-        std::cout << "Renderer: Mouse button pressed\n";
+        m_rock_in_water_06.y() -= 20.F * event.seconds_elapsed;
     }
 
-    if (is_key_pressed(KeyCode::Space))
+    if (is_key_pressed(KeyCode::Down))
     {
-        std::cout << "Renderer: Space pressed\n";
+        m_rock_in_water_06.y() += 20.F * event.seconds_elapsed;
     }
 
-    hero_frame_timer += event.seconds_elapsed;
-    if (hero_frame_timer >= 0.2F)
+    if (is_key_pressed(KeyCode::Left))
     {
-        hero_frame_timer   = 0.F;
-        current_hero_frame = (current_hero_frame + 1) % 4;
+        m_rock_in_water_06.x() -= 20.F * event.seconds_elapsed;
     }
 
-    renderer.draw_image(res_hero, 48 * current_hero_frame, 288, 0, 0, 48, 48, 144, 144);
+    if (is_key_pressed(KeyCode::Right))
+    {
+        m_rock_in_water_06.x() += 20.F * event.seconds_elapsed;
+    }
+
+    m_rock_in_water_06.render(renderer);
 
     fps_timer += event.seconds_elapsed;
     total_seconds_elapsed += event.seconds_elapsed;

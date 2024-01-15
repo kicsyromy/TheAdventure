@@ -2,6 +2,7 @@ set (
     PROJECT_RESOURCES
         "res/tilesets/grass.png"
         "res/characters/player.png"
+        "res/objects/rock_in_water_06.png"
 )
 
 set (RES_FIXED_PATH)

@@ -2,4 +2,5 @@
 .idea
 CMakeLists.txt.user
 build/
+_build/
 

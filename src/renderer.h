@@ -61,7 +61,10 @@ public:
                             std::int32_t src_height  = -1,
                             std::int32_t dest_width  = -1,
                             std::int32_t dest_height = -1);
-    std::int32_t load_image(const std::uint8_t *data, std::size_t size);
+    std::int32_t load_image(const std::uint8_t *data,
+                            std::size_t         size,
+                            std::int32_t       *width  = nullptr,
+                            std::int32_t       *height = nullptr);
 
     void present();
 

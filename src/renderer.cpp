@@ -144,9 +144,23 @@ void Renderer::draw_image(std::int32_t image_id,
     SDL_RenderCopy(renderer, image.texture, &srcRect, &destRect);
 }
 
-std::int32_t Renderer::load_image(const std::uint8_t *data, std::size_t size)
+std::int32_t Renderer::load_image(const std::uint8_t *data,
+                                  std::size_t         size,
+                                  std::int32_t       *width,
+                                  std::int32_t       *height)
 {
     images.emplace_back(this->renderer, data, size);
+
+    if (width != nullptr)
+    {
+        *width = images.back().width;
+    }
+
+    if (height != nullptr)
+    {
+        *height = images.back().height;
+    }
+
     return static_cast<std::int32_t>(images.size()) - 1;
 }
 

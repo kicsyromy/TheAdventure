@@ -9,6 +9,8 @@ add_executable (
     renderer.cpp
     sound.h
     sound.cpp
+    sprite.h
+    sprite.cpp
 )
 
 set_property (TARGET ${PROJECT_ID} PROPERTY CXX_STANDARD 17)
