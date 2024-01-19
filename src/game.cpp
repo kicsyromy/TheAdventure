@@ -55,6 +55,16 @@ void Game::render(Renderer &renderer, const RenderEvent &event)
 
     m_hero.render(renderer);
 
+    if (m_hero_attacking)
+    {
+        if (m_hero.current_frame() == 3)
+        {
+            m_hero_attacking = false;
+            m_hero.set_sprite_set(0);
+            m_hero.set_total_frames(6);
+        }
+    }
+
     fps_timer += event.seconds_elapsed;
     total_seconds_elapsed += event.seconds_elapsed;
     ++frame_counter;
@@ -110,6 +120,8 @@ void Game::on_key_pressed(const KeyPressEvent &event)
 {
     if (event.key_code == KeyCode::Space)
     {
+        m_hero_attacking = true;
+
         switch (m_hero_orientation)
         {
         case HeroOrientation::Up: {

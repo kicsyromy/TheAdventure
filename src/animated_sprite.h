@@ -17,6 +17,8 @@ public:
     void set_frame_time(std::chrono::milliseconds frame_time);
     void reset();
 
+    std::int32_t current_frame() const;
+
 private:
     std::int32_t m_sprite_set{ 0 };
     std::int32_t m_total_frames{ 0 };

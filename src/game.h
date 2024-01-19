@@ -79,4 +79,5 @@ private:
 
     AnimatedSprite  m_hero{};
     HeroOrientation m_hero_orientation{ HeroOrientation::Down };
+    bool            m_hero_attacking{ false };
 };
