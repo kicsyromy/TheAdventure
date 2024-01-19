@@ -29,24 +29,28 @@ void Game::render(Renderer &renderer, const RenderEvent &event)
     {
         m_hero.y() -= 250.F * event.seconds_elapsed;
         m_hero.set_sprite_set(5);
+        m_hero_orientation = HeroOrientation::Up;
     }
 
     if (is_key_pressed(KeyCode::Down))
     {
         m_hero.y() += 250.F * event.seconds_elapsed;
         m_hero.set_sprite_set(3);
+        m_hero_orientation = HeroOrientation::Down;
     }
 
     if (is_key_pressed(KeyCode::Left))
     {
         m_hero.x() -= 250.F * event.seconds_elapsed;
         m_hero.set_sprite_set(4, true);
+        m_hero_orientation = HeroOrientation::Left;
     }
 
     if (is_key_pressed(KeyCode::Right))
     {
         m_hero.x() += 250.F * event.seconds_elapsed;
         m_hero.set_sprite_set(4);
+        m_hero_orientation = HeroOrientation::Right;
     }
 
     m_hero.render(renderer);
@@ -103,10 +107,37 @@ void Game::on_mouse_wheel(const MouseWheelEvent &event)
 {}
 
 void Game::on_key_pressed(const KeyPressEvent &event)
-{}
+{
+    if (event.key_code == KeyCode::Space)
+    {
+        switch (m_hero_orientation)
+        {
+        case HeroOrientation::Up: {
+            m_hero.set_sprite_set(8);
+            break;
+        }
+        case HeroOrientation::Down: {
+            m_hero.set_sprite_set(6);
+            break;
+        }
+        case HeroOrientation::Left: {
+            m_hero.set_sprite_set(7, true);
+            break;
+        }
+        case HeroOrientation::Right: {
+            m_hero.set_sprite_set(7);
+            break;
+        }
+        }
+
+        m_hero.set_total_frames(6, 2);
+    }
+}
 
 void Game::on_key_released(const KeyReleaseEvent &event)
-{}
+{
+    fmt::print("Key released: {}\n", static_cast<std::int32_t>(event.key_code));
+}
 
 bool Game::is_mouse_button_pressed(MouseButton button) const
 {

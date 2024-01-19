@@ -20,6 +20,14 @@ struct MouseWheelEvent;
 struct KeyPressEvent;
 struct KeyReleaseEvent;
 
+enum class HeroOrientation
+{
+    Up,
+    Down,
+    Left,
+    Right
+};
+
 class Game final
 {
 public:
@@ -69,5 +77,6 @@ private:
     float       fps_timer{ 0.F };
     std::size_t frame_counter{ 0 };
 
-    AnimatedSprite m_hero;
+    AnimatedSprite  m_hero{};
+    HeroOrientation m_hero_orientation{ HeroOrientation::Down };
 };
