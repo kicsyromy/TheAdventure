@@ -57,6 +57,8 @@ public:
                             std::int32_t src_y,
                             std::int32_t dest_x,
                             std::int32_t dest_y,
+                            bool         flip_x      = false,
+                            bool         flip_y      = false,
                             std::int32_t src_width   = -1,
                             std::int32_t src_height  = -1,
                             std::int32_t dest_width  = -1,

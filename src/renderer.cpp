@@ -114,6 +114,8 @@ void Renderer::draw_image(std::int32_t image_id,
                           std::int32_t src_y,
                           std::int32_t dest_x,
                           std::int32_t dest_y,
+                          bool         flip_x,
+                          bool         flip_y,
                           std::int32_t src_width,
                           std::int32_t src_height,
                           std::int32_t dest_width,
@@ -139,9 +141,21 @@ void Renderer::draw_image(std::int32_t image_id,
         dest_height = src_height;
     }
 
+    SDL_RendererFlip flip = SDL_FLIP_NONE;
+
+    if (flip_x)
+    {
+        flip = SDL_FLIP_HORIZONTAL;
+    }
+
+    if (flip_y)
+    {
+        flip = static_cast<SDL_RendererFlip>(flip | SDL_FLIP_VERTICAL);
+    }
+
     const auto srcRect  = SDL_Rect{ src_x, src_y, src_width, src_height };
     const auto destRect = SDL_Rect{ dest_x, dest_y, dest_width, dest_height };
-    SDL_RenderCopy(renderer, image.texture, &srcRect, &destRect);
+    SDL_RenderCopyEx(renderer, image.texture, &srcRect, &destRect, 0, nullptr, flip);
 }
 
 std::int32_t Renderer::load_image(const std::uint8_t *data,

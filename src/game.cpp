@@ -17,7 +17,7 @@ void Game::load_assets(Renderer &renderer)
     m_hero.scale_y() *= 4.F;
     m_hero.set_sprite_set(1);
     m_hero.set_total_frames(6);
-    m_hero.set_frame_time(std::chrono::milliseconds{ 200 });
+    m_hero.set_frame_time(std::chrono::milliseconds{ 100 });
 }
 
 void Game::render(Renderer &renderer, const RenderEvent &event)
@@ -40,7 +40,7 @@ void Game::render(Renderer &renderer, const RenderEvent &event)
     if (is_key_pressed(KeyCode::Left))
     {
         m_hero.x() -= 250.F * event.seconds_elapsed;
-        m_hero.set_sprite_set(0);
+        m_hero.set_sprite_set(4, true);
     }
 
     if (is_key_pressed(KeyCode::Right))

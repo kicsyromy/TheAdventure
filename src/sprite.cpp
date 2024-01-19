@@ -15,6 +15,8 @@ void Sprite::render(Renderer &renderer)
                         0,
                         static_cast<std::int32_t>(std::round(m_pos_x)),
                         static_cast<std::int32_t>(std::round(m_pos_y)),
+                        false,
+                        false,
                         m_width,
                         m_height,
                         static_cast<std::int32_t>(std::round(m_width * m_scale_x)),

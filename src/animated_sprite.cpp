@@ -16,15 +16,18 @@ void AnimatedSprite::render(Renderer &renderer)
                         m_sprite_set * m_frame_size,
                         static_cast<std::int32_t>(std::round(x())),
                         static_cast<std::int32_t>(std::round(y())),
+                        m_flip,
+                        false,
                         m_frame_size,
                         m_frame_size,
                         static_cast<std::int32_t>(std::round(m_frame_size * scale_x())),
                         static_cast<std::int32_t>(std::round(m_frame_size * scale_y())));
 }
 
-void AnimatedSprite::set_sprite_set(std::int32_t sprite_set)
+void AnimatedSprite::set_sprite_set(std::int32_t sprite_set, bool flip)
 {
     m_sprite_set = sprite_set;
+    m_flip       = flip;
 }
 
 void AnimatedSprite::set_total_frames(std::int32_t total_frames, std::int32_t exclude_frames)
