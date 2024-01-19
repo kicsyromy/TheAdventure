@@ -27,6 +27,7 @@ target_link_libraries (
     PRIVATE
         fmt::fmt
         SDL::SDL2
+        SDL::SDL_mixer
         stb::stb
 )
 

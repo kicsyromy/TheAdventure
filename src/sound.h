@@ -4,16 +4,15 @@
 #include <memory>
 #include <vector>
 
-struct stb_vorbis;
+struct Mix_Chunk;
 
 class Sound
 {
 private:
     struct Sample
     {
-        std::int32_t                                        id;
-        std::unique_ptr<stb_vorbis, void (*)(stb_vorbis *)> data_stream;
-        std::uint32_t                                       audio_device_id;
+        std::int32_t                                      id;
+        std::unique_ptr<Mix_Chunk, void (*)(Mix_Chunk *)> data;
     };
 
 public:
@@ -29,7 +28,5 @@ public:
     void         play(std::int32_t sample_id);
 
 private:
-    static void audio_callback(void *userdata, uint8_t *stream, int len);
-
-    std::vector<std::unique_ptr<Sample>> loaded_samples;
+    std::vector<Sample> loaded_samples;
 };
