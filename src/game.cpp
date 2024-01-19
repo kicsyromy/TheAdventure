@@ -147,9 +147,7 @@ void Game::on_key_pressed(const KeyPressEvent &event)
 }
 
 void Game::on_key_released(const KeyReleaseEvent &event)
-{
-    fmt::print("Key released: {}\n", static_cast<std::int32_t>(event.key_code));
-}
+{}
 
 bool Game::is_mouse_button_pressed(MouseButton button) const
 {
