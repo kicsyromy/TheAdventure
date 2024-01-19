@@ -1,5 +1,7 @@
 #include "animated_sprite.h"
 
+#include <cmath>
+
 void AnimatedSprite::render(Renderer &renderer)
 {
     auto now = std::chrono::steady_clock::now();
