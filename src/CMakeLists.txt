@@ -1,5 +1,7 @@
 add_executable (
     ${PROJECT_ID}
+    animated_sprite.h
+    animated_sprite.cpp
     codes.h
     events.h
     game.h

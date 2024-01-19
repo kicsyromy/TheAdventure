@@ -1,5 +1,6 @@
 #pragma once
 
+#include "animated_sprite.h"
 #include "codes.h"
 #include "sound.h"
 #include "sprite.h"
@@ -68,11 +69,5 @@ private:
     float       fps_timer{ 0.F };
     std::size_t frame_counter{ 0 };
 
-    std::int32_t res_hero;
-    std::uint8_t current_hero_frame{ 0 };
-    float        hero_frame_timer{ 0.F };
-
-    std::int32_t res_tile_grass;
-
-    Sprite m_rock_in_water_06;
+    AnimatedSprite m_hero;
 };
