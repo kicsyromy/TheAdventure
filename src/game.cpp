@@ -5,10 +5,7 @@
 
 #include <fmt/format.h>
 
-#include <iostream>
-
-Game::~Game()
-{}
+Game::~Game() = default;
 
 void Game::load_assets(Renderer &renderer)
 {
@@ -151,10 +148,10 @@ void Game::on_key_released(const KeyReleaseEvent &event)
 
 bool Game::is_mouse_button_pressed(MouseButton button) const
 {
-    return mouse_button_states[static_cast<std::size_t>(button)] != 0;
+    return m_mouse_button_states[static_cast<std::size_t>(button)] != 0;
 }
 
 bool Game::is_key_pressed(KeyCode key_code) const
 {
-    return keyboard_state[static_cast<std::size_t>(key_code)] != 0;
+    return m_keyboard_state[static_cast<std::size_t>(key_code)] != 0;
 }

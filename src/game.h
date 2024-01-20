@@ -33,8 +33,8 @@ class Game final
 public:
     template<typename MBS, typename KS>
     Game(const MBS &mouse_button_states, const KS &keyboard_state)
-      : mouse_button_states(mouse_button_states)
-      , keyboard_state(keyboard_state)
+      : m_mouse_button_states(mouse_button_states)
+      , m_keyboard_state(keyboard_state)
     {}
 
     ~Game();
@@ -68,10 +68,10 @@ private:
     bool is_mouse_button_pressed(MouseButton button) const;
     bool is_key_pressed(KeyCode key_code) const;
 
-    const std::uint8_t *const mouse_button_states;
-    const std::uint8_t *const keyboard_state;
+    const std::uint8_t *const m_mouse_button_states;
+    const std::uint8_t *const m_keyboard_state;
 
-    Sound sound;
+    Sound m_sound;
 
     float       total_seconds_elapsed{ 0.F };
     float       fps_timer{ 0.F };
