@@ -57,13 +57,6 @@ int main()
                 break;
             }
 
-            const auto mouse_position = []() -> std::tuple<std::int32_t, std::int32_t> {
-                auto mouse_x = std::int32_t{};
-                auto mouse_y = std::int32_t{};
-                SDL_GetMouseState(&mouse_x, &mouse_y);
-                return { mouse_x, mouse_y };
-            }();
-
             switch (event.type)
             {
             default:
@@ -175,12 +168,14 @@ int main()
             }
 
             case SDL_EventType::SDL_KEYUP: {
-                game.on_key_released(KeyReleaseEvent{ static_cast<KeyCode>(event.key.keysym.sym) });
+                game.on_key_released(
+                    KeyReleaseEvent{ static_cast<KeyCode>(event.key.keysym.scancode) });
                 break;
             }
 
             case SDL_EventType::SDL_KEYDOWN: {
-                game.on_key_pressed(KeyPressEvent{ static_cast<KeyCode>(event.key.keysym.sym) });
+                game.on_key_pressed(
+                    KeyPressEvent{ static_cast<KeyCode>(event.key.keysym.scancode) });
                 break;
             }
             }
