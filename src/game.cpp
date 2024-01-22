@@ -15,6 +15,9 @@ void Game::load_assets(Renderer &renderer)
     m_hero.set_sprite_set(1);
     m_hero.set_total_frames(6);
     m_hero.set_frame_time(std::chrono::milliseconds{ 100 });
+
+    m_hero_attack_sound_id =
+        m_sound.load_sample(resource__07_human_atk_sword_1, resource__07_human_atk_sword_1_size);
 }
 
 void Game::render(Renderer &renderer, const RenderEvent &event)
@@ -173,6 +176,7 @@ void Game::on_key_pressed(const KeyPressEvent &event)
         }
 
         m_hero.set_total_frames(6, 2);
+        m_sound.play_sample(m_hero_attack_sound_id);
     }
 }
 

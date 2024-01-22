@@ -80,4 +80,5 @@ private:
     AnimatedSprite  m_hero{};
     HeroOrientation m_hero_orientation{ HeroOrientation::Down };
     bool            m_hero_attacking{ false };
+    std::int32_t    m_hero_attack_sound_id{ -1 };
 };
