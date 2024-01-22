@@ -6,6 +6,8 @@ add_executable (
     events.h
     game.h
     game.cpp
+    hero.cpp
+    hero.h
     main.cpp
     renderer.h
     renderer.cpp
