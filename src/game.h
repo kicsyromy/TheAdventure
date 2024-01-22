@@ -2,6 +2,7 @@
 
 #include "animated_sprite.h"
 #include "codes.h"
+#include "hero.h"
 #include "sound.h"
 #include "sprite.h"
 
@@ -19,14 +20,6 @@ struct MouseButtonReleaseEvent;
 struct MouseWheelEvent;
 struct KeyPressEvent;
 struct KeyReleaseEvent;
-
-enum class HeroOrientation
-{
-    Up,
-    Down,
-    Left,
-    Right
-};
 
 class Game final
 {
@@ -64,10 +57,10 @@ public:
     void on_key_pressed(const KeyPressEvent &event);
     void on_key_released(const KeyReleaseEvent &event);
 
-private:
     bool is_mouse_button_pressed(MouseButton button) const;
     bool is_key_pressed(KeyCode key_code) const;
 
+private:
     const std::uint8_t *const m_mouse_button_states;
     const std::uint8_t *const m_keyboard_state;
 
@@ -77,10 +70,7 @@ private:
     float       fps_timer{ 0.F };
     std::size_t frame_counter{ 0 };
 
-    AnimatedSprite  m_hero{};
-    HeroOrientation m_hero_orientation{ HeroOrientation::Down };
-    bool            m_hero_attacking{ false };
-    std::int32_t    m_hero_attack_sound_id{ -1 };
-
     std::int32_t m_bg_music_id{ -1 };
+
+    Hero m_hero{};
 };
