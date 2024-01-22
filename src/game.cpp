@@ -10,8 +10,8 @@ Game::~Game() = default;
 void Game::load_assets(Renderer &renderer)
 {
     m_hero = AnimatedSprite{ resource_player, resource_player_size, renderer };
-    m_hero.scale_x() *= 4.F;
-    m_hero.scale_y() *= 4.F;
+    m_hero.scale_x() *= 2.F;
+    m_hero.scale_y() *= 2.F;
     m_hero.set_sprite_set(1);
     m_hero.set_total_frames(6);
     m_hero.set_frame_time(std::chrono::milliseconds{ 100 });
@@ -22,32 +22,65 @@ void Game::render(Renderer &renderer, const RenderEvent &event)
     renderer.set_color({ 127, 127, 127, 255 });
     renderer.clear();
 
+    bool is_idle = true;
+
     if (is_key_pressed(KeyCode::Up))
     {
-        m_hero.y() -= 250.F * event.seconds_elapsed;
+        m_hero.y() -= 120.F * event.seconds_elapsed;
         m_hero.set_sprite_set(5);
         m_hero_orientation = HeroOrientation::Up;
+
+        is_idle = false;
     }
 
     if (is_key_pressed(KeyCode::Down))
     {
-        m_hero.y() += 250.F * event.seconds_elapsed;
+        m_hero.y() += 120.F * event.seconds_elapsed;
         m_hero.set_sprite_set(3);
         m_hero_orientation = HeroOrientation::Down;
+
+        is_idle = false;
     }
 
     if (is_key_pressed(KeyCode::Left))
     {
-        m_hero.x() -= 250.F * event.seconds_elapsed;
+        m_hero.x() -= 120.F * event.seconds_elapsed;
         m_hero.set_sprite_set(4, true);
         m_hero_orientation = HeroOrientation::Left;
+
+        is_idle = false;
     }
 
     if (is_key_pressed(KeyCode::Right))
     {
-        m_hero.x() += 250.F * event.seconds_elapsed;
+        m_hero.x() += 120.F * event.seconds_elapsed;
         m_hero.set_sprite_set(4);
         m_hero_orientation = HeroOrientation::Right;
+
+        is_idle = false;
+    }
+
+    if (is_idle && !m_hero_attacking)
+    {
+        switch (m_hero_orientation)
+        {
+        case HeroOrientation::Up: {
+            m_hero.set_sprite_set(2);
+            break;
+        }
+        case HeroOrientation::Down: {
+            m_hero.set_sprite_set(0);
+            break;
+        }
+        case HeroOrientation::Left: {
+            m_hero.set_sprite_set(1, true);
+            break;
+        }
+        case HeroOrientation::Right: {
+            m_hero.set_sprite_set(1);
+            break;
+        }
+        }
     }
 
     m_hero.render(renderer);
