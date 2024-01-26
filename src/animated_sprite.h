@@ -18,6 +18,7 @@ public:
     void reset();
 
     std::int32_t current_frame() const;
+    std::int32_t total_frames() const;
 
 private:
     std::int32_t m_sprite_set{ 0 };

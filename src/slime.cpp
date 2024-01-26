@@ -1,4 +1,4 @@
-#include "hero.h"
+#include "slime.h"
 #include "codes.h"
 #include "game.h"
 
@@ -6,48 +6,39 @@
 
 enum SpriteSet
 {
-    IdleDown,
     IdleRight,
-    IdleUp,
-    RunningDown,
-    RunningRight,
-    RunningUp,
-    AttackingDown,
+    JumpingRight,
     AttackingRight,
-    AttackingUp,
+    TakingDamageRight,
     Death
 };
 
-static constexpr std::int32_t MAX_FRAMES    = 6;
-static constexpr std::int32_t ATTACK_FRAMES = 4;
+static constexpr std::int32_t MAX_FRAMES    = 7;
+static constexpr std::int32_t IDLE_FRAMES   = 4;
+static constexpr std::int32_t JUMP_FRAMES   = 6;
+static constexpr std::int32_t ATTACK_FRAMES = 7;
+static constexpr std::int32_t DAMAGE_FRAMES = 3;
+static constexpr std::int32_t DEATH_FRAMES  = 5;
 
-Hero::Hero(Renderer &renderer, Sound &sound)
-  : m_sprite{ resource_player, resource_player_size, renderer }
+Slime::Slime(Renderer &renderer, Sound &sound)
+  : m_sprite{ resource_slime, resource_slime_size, renderer }
 {
     m_sprite.scale_x() *= 2.F;
     m_sprite.scale_y() *= 2.F;
-    m_sprite.set_sprite_set(SpriteSet::IdleDown);
-    m_sprite.set_total_frames(MAX_FRAMES);
+    m_sprite.set_sprite_set(SpriteSet::IdleRight);
+    m_sprite.set_total_frames(MAX_FRAMES, MAX_FRAMES - IDLE_FRAMES);
     m_sprite.set_frame_time(std::chrono::milliseconds{ 100 });
 
     m_attack_sound_id =
         sound.load_sample(resource__07_human_atk_sword_1, resource__07_human_atk_sword_1_size);
 }
 
-void Hero::attack(Sound &sound)
+void Slime::attack(Sound &sound)
 {
     m_is_attacking = true;
 
     switch (m_orientation)
     {
-    case Orientation::Up: {
-        m_sprite.set_sprite_set(SpriteSet::AttackingUp);
-        break;
-    }
-    case Orientation::Down: {
-        m_sprite.set_sprite_set(SpriteSet::AttackingDown);
-        break;
-    }
     case Orientation::Left: {
         m_sprite.set_sprite_set(SpriteSet::AttackingRight, true);
         break;
@@ -63,7 +54,7 @@ void Hero::attack(Sound &sound)
     sound.play_sample(m_attack_sound_id);
 }
 
-void Hero::update(Game &game, const RenderEvent &event)
+void Slime::update(Game &game, const RenderEvent &event)
 {
     if (m_is_attacking && m_sprite.current_frame() == ATTACK_FRAMES - 1)
     {
@@ -72,37 +63,39 @@ void Hero::update(Game &game, const RenderEvent &event)
 
     m_is_moving = false;
 
-    if (game.is_key_pressed(KeyCode::Up))
+    if (game.is_key_pressed(KeyCode::W))
     {
         m_sprite.y() -= 120.F * event.seconds_elapsed;
-        m_sprite.set_sprite_set(SpriteSet::RunningUp);
-        m_orientation = Orientation::Up;
+        m_sprite.set_sprite_set(SpriteSet::JumpingRight, m_orientation == Orientation::Left);
+        m_sprite.set_total_frames(MAX_FRAMES, MAX_FRAMES - JUMP_FRAMES);
 
         m_is_moving = true;
     }
 
-    if (game.is_key_pressed(KeyCode::Down))
+    if (game.is_key_pressed(KeyCode::S))
     {
         m_sprite.y() += 120.F * event.seconds_elapsed;
-        m_sprite.set_sprite_set(SpriteSet::RunningDown);
-        m_orientation = Orientation::Down;
+        m_sprite.set_sprite_set(SpriteSet::JumpingRight, m_orientation == Orientation::Left);
+        m_sprite.set_total_frames(MAX_FRAMES, MAX_FRAMES - JUMP_FRAMES);
 
         m_is_moving = true;
     }
 
-    if (game.is_key_pressed(KeyCode::Left))
+    if (game.is_key_pressed(KeyCode::A))
     {
         m_sprite.x() -= 120.F * event.seconds_elapsed;
-        m_sprite.set_sprite_set(SpriteSet::RunningRight, true);
+        m_sprite.set_sprite_set(SpriteSet::JumpingRight, true);
+        m_sprite.set_total_frames(MAX_FRAMES, MAX_FRAMES - JUMP_FRAMES);
         m_orientation = Orientation::Left;
 
         m_is_moving = true;
     }
 
-    if (game.is_key_pressed(KeyCode::Right))
+    if (game.is_key_pressed(KeyCode::D))
     {
         m_sprite.x() += 120.F * event.seconds_elapsed;
-        m_sprite.set_sprite_set(SpriteSet::RunningRight);
+        m_sprite.set_sprite_set(SpriteSet::JumpingRight);
+        m_sprite.set_total_frames(MAX_FRAMES, MAX_FRAMES - JUMP_FRAMES);
         m_orientation = Orientation::Right;
 
         m_is_moving = true;
@@ -113,14 +106,6 @@ void Hero::update(Game &game, const RenderEvent &event)
         // Go to idle
         switch (m_orientation)
         {
-        case Orientation::Up: {
-            m_sprite.set_sprite_set(SpriteSet::IdleUp);
-            break;
-        }
-        case Orientation::Down: {
-            m_sprite.set_sprite_set(SpriteSet::IdleDown);
-            break;
-        }
         case Orientation::Left: {
             m_sprite.set_sprite_set(SpriteSet::IdleRight, true);
             break;
@@ -131,11 +116,15 @@ void Hero::update(Game &game, const RenderEvent &event)
         }
         }
 
-        m_sprite.reset();
+        if (m_sprite.total_frames() != IDLE_FRAMES)
+        {
+            m_sprite.set_total_frames(MAX_FRAMES, MAX_FRAMES - IDLE_FRAMES);
+            m_sprite.reset();
+        }
     }
 }
 
-void Hero::render(Renderer &renderer)
+void Slime::render(Renderer &renderer)
 {
     m_sprite.render(renderer);
 }

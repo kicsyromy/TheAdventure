@@ -34,15 +34,11 @@ void AnimatedSprite::set_total_frames(std::int32_t total_frames, std::int32_t ex
 {
     m_total_frames = total_frames - exclude_frames;
     m_frame_size   = m_width / total_frames;
-
-    reset();
 }
 
 void AnimatedSprite::set_frame_time(std::chrono::milliseconds frame_time)
 {
     m_frame_time = frame_time;
-
-    reset();
 }
 
 void AnimatedSprite::reset()
@@ -54,4 +50,9 @@ void AnimatedSprite::reset()
 std::int32_t AnimatedSprite::current_frame() const
 {
     return m_current_frame;
+}
+
+std::int32_t AnimatedSprite::total_frames() const
+{
+    return m_total_frames;
 }

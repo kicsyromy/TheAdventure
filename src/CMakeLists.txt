@@ -11,6 +11,8 @@ add_executable (
     main.cpp
     renderer.h
     renderer.cpp
+    slime.cpp
+    slime.h
     sound.h
     sound.cpp
     sprite.h

@@ -2,6 +2,7 @@ set (
     PROJECT_RESOURCES
         "res/music/world_bg.mp3"
         "res/characters/player.png"
+        "res/characters/slime.png"
         "res/objects/rock_in_water_06.png"
         "res/sfx/01_chest_open_1.mp3"
         "res/sfx/02_chest_close_1.mp3"

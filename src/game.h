@@ -3,6 +3,7 @@
 #include "animated_sprite.h"
 #include "codes.h"
 #include "hero.h"
+#include "slime.h"
 #include "sound.h"
 #include "sprite.h"
 
@@ -73,5 +74,6 @@ private:
 
     std::int32_t m_bg_music_id{ -1 };
 
-    std::optional<Hero> m_hero{ std::nullopt };
+    std::optional<Hero>  m_hero{ std::nullopt };
+    std::optional<Slime> m_slime{ std::nullopt };
 };

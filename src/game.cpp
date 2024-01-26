@@ -12,7 +12,8 @@ void Game::load_assets(Renderer &renderer)
     m_bg_music_id = m_sound.load_music(resource_world_bg, resource_world_bg_size);
     m_sound.play_music(m_bg_music_id);
 
-    m_hero = std::make_optional<Hero>(renderer, m_sound);
+    m_hero  = std::make_optional<Hero>(renderer, m_sound);
+    m_slime = std::make_optional<Slime>(renderer, m_sound);
 }
 
 void Game::render(Renderer &renderer, const RenderEvent &event)
@@ -21,7 +22,10 @@ void Game::render(Renderer &renderer, const RenderEvent &event)
     renderer.clear();
 
     m_hero->update(*this, event);
+    m_slime->update(*this, event);
+
     m_hero->render(renderer);
+    m_slime->render(renderer);
 
     fps_timer += event.seconds_elapsed;
     total_seconds_elapsed += event.seconds_elapsed;
@@ -79,6 +83,11 @@ void Game::on_key_pressed(const KeyPressEvent &event)
     if (event.key_code == KeyCode::Space)
     {
         m_hero->attack(m_sound);
+    }
+
+    if (event.key_code == KeyCode::E)
+    {
+        m_slime->attack(m_sound);
     }
 }
 
