@@ -4,6 +4,9 @@
 
 #include <resources.h>
 
+#include <iostream>
+#include <random>
+
 enum SpriteSet
 {
     IdleRight,
@@ -22,9 +25,13 @@ static constexpr std::int32_t DEATH_FRAMES  = 5;
 
 Slime::Slime(Renderer &renderer, Sound &sound)
   : m_sprite{ resource_slime, resource_slime_size, renderer }
+  , m_generator{ std::random_device{}() }
+  , m_distribution{ 0, 10 }
 {
     m_sprite.scale_x() *= 2.F;
     m_sprite.scale_y() *= 2.F;
+    m_sprite.x() = 100.F;
+    m_sprite.y() = 100.F;
     m_sprite.set_sprite_set(SpriteSet::IdleRight);
     m_sprite.set_total_frames(MAX_FRAMES, MAX_FRAMES - IDLE_FRAMES);
     m_sprite.set_frame_time(std::chrono::milliseconds{ 100 });
@@ -61,47 +68,80 @@ void Slime::update(Game &game, const RenderEvent &event)
         m_is_attacking = false;
     }
 
-    m_is_moving = false;
-
-    if (game.is_key_pressed(KeyCode::W))
+    const auto now = std::chrono::steady_clock::now();
+    if (now - m_last_gen_time >= std::chrono::seconds{ 1 })
     {
-        m_sprite.y() -= 120.F * event.seconds_elapsed;
-        m_sprite.set_sprite_set(SpriteSet::JumpingRight, m_orientation == Orientation::Left);
-        m_sprite.set_total_frames(MAX_FRAMES, MAX_FRAMES - JUMP_FRAMES);
+        m_last_gen_time = now;
 
-        m_is_moving = true;
+        switch (m_distribution(m_generator))
+        {
+        case 0: {
+            m_direction = Direction::Up;
+            m_is_moving = true;
+            break;
+        }
+        case 1: {
+            m_direction = Direction::Down;
+            m_is_moving = true;
+            break;
+        }
+        case 2: {
+            m_direction = Direction::Left;
+            m_is_moving = true;
+            break;
+        }
+        case 3: {
+            m_direction = Direction::Right;
+            m_is_moving = true;
+            break;
+        }
+        default:
+            m_is_moving = false;
+            break;
+        }
     }
 
-    if (game.is_key_pressed(KeyCode::S))
+    if (m_is_moving)
     {
-        m_sprite.y() += 120.F * event.seconds_elapsed;
-        m_sprite.set_sprite_set(SpriteSet::JumpingRight, m_orientation == Orientation::Left);
-        m_sprite.set_total_frames(MAX_FRAMES, MAX_FRAMES - JUMP_FRAMES);
+        switch (m_direction)
+        {
+        case Direction::Up: {
+            m_sprite.y() -= 120.F * event.seconds_elapsed;
+            m_sprite.set_sprite_set(SpriteSet::JumpingRight, m_orientation == Orientation::Left);
+            m_sprite.set_total_frames(MAX_FRAMES, MAX_FRAMES - JUMP_FRAMES);
 
-        m_is_moving = true;
+            m_is_moving = true;
+            break;
+        }
+        case Direction::Down: {
+            m_sprite.y() += 120.F * event.seconds_elapsed;
+            m_sprite.set_sprite_set(SpriteSet::JumpingRight, m_orientation == Orientation::Left);
+            m_sprite.set_total_frames(MAX_FRAMES, MAX_FRAMES - JUMP_FRAMES);
+
+            m_is_moving = true;
+            break;
+        }
+        case Direction::Left: {
+            m_sprite.x() -= 120.F * event.seconds_elapsed;
+            m_sprite.set_sprite_set(SpriteSet::JumpingRight, true);
+            m_sprite.set_total_frames(MAX_FRAMES, MAX_FRAMES - JUMP_FRAMES);
+            m_orientation = Orientation::Left;
+
+            m_is_moving = true;
+            break;
+        }
+        case Direction::Right: {
+            m_sprite.x() += 120.F * event.seconds_elapsed;
+            m_sprite.set_sprite_set(SpriteSet::JumpingRight);
+            m_sprite.set_total_frames(MAX_FRAMES, MAX_FRAMES - JUMP_FRAMES);
+            m_orientation = Orientation::Right;
+
+            m_is_moving = true;
+            break;
+        }
+        }
     }
-
-    if (game.is_key_pressed(KeyCode::A))
-    {
-        m_sprite.x() -= 120.F * event.seconds_elapsed;
-        m_sprite.set_sprite_set(SpriteSet::JumpingRight, true);
-        m_sprite.set_total_frames(MAX_FRAMES, MAX_FRAMES - JUMP_FRAMES);
-        m_orientation = Orientation::Left;
-
-        m_is_moving = true;
-    }
-
-    if (game.is_key_pressed(KeyCode::D))
-    {
-        m_sprite.x() += 120.F * event.seconds_elapsed;
-        m_sprite.set_sprite_set(SpriteSet::JumpingRight);
-        m_sprite.set_total_frames(MAX_FRAMES, MAX_FRAMES - JUMP_FRAMES);
-        m_orientation = Orientation::Right;
-
-        m_is_moving = true;
-    }
-
-    if (!m_is_moving && !m_is_attacking)
+    else if (!m_is_attacking)
     {
         // Go to idle
         switch (m_orientation)

@@ -21,11 +21,11 @@ void Game::render(Renderer &renderer, const RenderEvent &event)
     renderer.set_color({ 127, 127, 127, 255 });
     renderer.clear();
 
-    m_hero->update(*this, event);
     m_slime->update(*this, event);
+    m_hero->update(*this, event);
 
-    m_hero->render(renderer);
     m_slime->render(renderer);
+    m_hero->render(renderer);
 
     fps_timer += event.seconds_elapsed;
     total_seconds_elapsed += event.seconds_elapsed;
@@ -83,11 +83,6 @@ void Game::on_key_pressed(const KeyPressEvent &event)
     if (event.key_code == KeyCode::Space)
     {
         m_hero->attack(m_sound);
-    }
-
-    if (event.key_code == KeyCode::E)
-    {
-        m_slime->attack(m_sound);
     }
 }
 
