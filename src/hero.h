@@ -18,7 +18,6 @@ private:
     };
 
 public:
-    Hero() = default;
     Hero(Renderer &renderer, Sound &sound);
 
     void attack(Sound &sound);
@@ -26,7 +25,7 @@ public:
     void render(Renderer &renderer);
 
 private:
-    AnimatedSprite m_sprite{};
+    AnimatedSprite m_sprite;
     Orientation    m_orientation{ Orientation::Down };
     bool           m_is_attacking{ false };
     bool           m_is_moving{ false };

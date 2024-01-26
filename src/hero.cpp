@@ -22,8 +22,8 @@ static constexpr std::int32_t MAX_FRAMES    = 6;
 static constexpr std::int32_t ATTACK_FRAMES = 4;
 
 Hero::Hero(Renderer &renderer, Sound &sound)
+  : m_sprite{ resource_player, resource_player_size, renderer }
 {
-    m_sprite = AnimatedSprite{ resource_player, resource_player_size, renderer };
     m_sprite.scale_x() *= 2.F;
     m_sprite.scale_y() *= 2.F;
     m_sprite.set_sprite_set(SpriteSet::IdleDown);

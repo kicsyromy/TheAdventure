@@ -7,7 +7,6 @@
 class Sprite
 {
 public:
-    Sprite() = default;
     Sprite(const std::uint8_t *data, std::size_t size, Renderer &renderer);
 
     virtual ~Sprite() = default;

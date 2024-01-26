@@ -7,6 +7,7 @@
 #include "sprite.h"
 
 #include <cstdint>
+#include <memory>
 #include <random>
 #include <vector>
 
@@ -72,5 +73,5 @@ private:
 
     std::int32_t m_bg_music_id{ -1 };
 
-    Hero m_hero{};
+    std::unique_ptr<Hero> m_hero{ nullptr }; // Owned Hero *
 };
