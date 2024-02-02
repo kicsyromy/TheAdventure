@@ -21,7 +21,7 @@ void Game::render(Renderer &renderer, const RenderEvent &event)
     renderer.set_color({ 127, 127, 127, 255 });
     renderer.clear();
 
-    //    m_slime->update(*this, event);
+    m_slime->update(*this, event);
     m_hero->update(*this, event);
 
     m_slime->is_colliding(m_hero->sprite());
