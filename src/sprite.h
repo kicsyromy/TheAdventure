@@ -42,7 +42,8 @@ public:
     virtual void render(Renderer &renderer);
 
     void set_collision_box(Rect collision_box);
-    void render_collision_box(Renderer &renderer);
+    void render_collision_box(Renderer &renderer, bool is_colliding = false);
+    bool is_colliding(const Sprite &other) const;
 
     float &x();
     float &y();

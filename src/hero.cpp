@@ -24,7 +24,7 @@ static constexpr std::int32_t ATTACK_FRAMES = 4;
 Hero::Hero(Renderer &renderer, Sound &sound)
   : m_sprite{ resource_player, resource_player_size, renderer }
 {
-    m_sprite.set_collision_box({ 30, 38, 19, 24 });
+    m_sprite.set_collision_box({ 15, 19, 19, 24 });
     m_sprite.scale_x() *= 2.F;
     m_sprite.scale_y() *= 2.F;
     m_sprite.set_sprite_set(SpriteSet::IdleDown);
@@ -139,5 +139,16 @@ void Hero::update(Game &game, const RenderEvent &event)
 void Hero::render(Renderer &renderer)
 {
     m_sprite.render(renderer);
-    m_sprite.render_collision_box(renderer);
+    m_sprite.render_collision_box(renderer, m_is_colliding);
+}
+
+const Sprite &Hero::sprite() const
+{
+    return m_sprite;
+}
+
+bool Hero::is_colliding(const Sprite &sprite)
+{
+    m_is_colliding = m_sprite.is_colliding(sprite);
+    return m_is_colliding;
 }
