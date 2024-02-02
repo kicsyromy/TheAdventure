@@ -55,58 +55,60 @@ Renderer::Image &Renderer::Image::operator=(Image &&other)
 }
 
 Renderer::Renderer(SDL_Window *window)
-  : renderer{ SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED) }
-{}
+  : m_renderer{ SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED) }
+{
+    SDL_SetRenderDrawBlendMode(m_renderer, SDL_BLENDMODE_BLEND);
+}
 
 Renderer::~Renderer()
 {
-    SDL_DestroyRenderer(renderer);
+    SDL_DestroyRenderer(m_renderer);
 }
 
 std::int32_t Renderer::width() const
 {
     std::int32_t width;
-    SDL_GetRendererOutputSize(renderer, &width, nullptr);
+    SDL_GetRendererOutputSize(m_renderer, &width, nullptr);
     return width;
 }
 
 std::int32_t Renderer::height() const
 {
     std::int32_t height;
-    SDL_GetRendererOutputSize(renderer, nullptr, &height);
+    SDL_GetRendererOutputSize(m_renderer, nullptr, &height);
     return height;
 }
 
 void Renderer::set_color(const Color &color)
 {
-    SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, color.a);
+    SDL_SetRenderDrawColor(m_renderer, color.r, color.g, color.b, color.a);
 }
 
 void Renderer::clear()
 {
-    SDL_RenderClear(renderer);
+    SDL_RenderClear(m_renderer);
 }
 
 void Renderer::put_pixel(std::int32_t x, std::int32_t y)
 {
-    SDL_RenderDrawPoint(renderer, x, y);
+    SDL_RenderDrawPoint(m_renderer, x, y);
 }
 
 void Renderer::draw_line(std::int32_t x0, std::int32_t y0, std::int32_t x1, std::int32_t y1)
 {
-    SDL_RenderDrawLine(renderer, x0, y0, x1, y1);
+    SDL_RenderDrawLine(m_renderer, x0, y0, x1, y1);
 }
 
 void Renderer::draw_rect(std::int32_t x, std::int32_t y, std::int32_t width, std::int32_t height)
 {
     SDL_Rect rect{ x, y, width, height };
-    SDL_RenderDrawRect(renderer, &rect);
+    SDL_RenderDrawRect(m_renderer, &rect);
 }
 
 void Renderer::fill_rect(std::int32_t x, std::int32_t y, std::int32_t width, std::int32_t height)
 {
     SDL_Rect rect{ x, y, width, height };
-    SDL_RenderFillRect(renderer, &rect);
+    SDL_RenderFillRect(m_renderer, &rect);
 }
 
 void Renderer::draw_image(std::int32_t image_id,
@@ -155,7 +157,7 @@ void Renderer::draw_image(std::int32_t image_id,
 
     const auto srcRect  = SDL_Rect{ src_x, src_y, src_width, src_height };
     const auto destRect = SDL_Rect{ dest_x, dest_y, dest_width, dest_height };
-    SDL_RenderCopyEx(renderer, image.texture, &srcRect, &destRect, 0, nullptr, flip);
+    SDL_RenderCopyEx(m_renderer, image.texture, &srcRect, &destRect, 0, nullptr, flip);
 }
 
 std::int32_t Renderer::load_image(const std::uint8_t *data,
@@ -163,7 +165,7 @@ std::int32_t Renderer::load_image(const std::uint8_t *data,
                                   std::int32_t       *width,
                                   std::int32_t       *height)
 {
-    images.emplace_back(this->renderer, data, size);
+    images.emplace_back(this->m_renderer, data, size);
 
     if (width != nullptr)
     {
@@ -180,5 +182,5 @@ std::int32_t Renderer::load_image(const std::uint8_t *data,
 
 void Renderer::present()
 {
-    SDL_RenderPresent(renderer);
+    SDL_RenderPresent(m_renderer);
 }

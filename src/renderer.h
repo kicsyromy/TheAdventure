@@ -71,6 +71,6 @@ public:
     void present();
 
 private:
-    SDL_Renderer      *renderer{ nullptr };
+    SDL_Renderer      *m_renderer{ nullptr };
     std::vector<Image> images;
 };

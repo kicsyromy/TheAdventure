@@ -7,6 +7,15 @@
 class Sprite
 {
 public:
+    struct Rect
+    {
+        float x;
+        float y;
+        float width;
+        float height;
+    };
+
+public:
     Sprite(const std::uint8_t *data, std::size_t size, Renderer &renderer);
 
     virtual ~Sprite() = default;
@@ -32,6 +41,9 @@ public:
 
     virtual void render(Renderer &renderer);
 
+    void set_collision_box(Rect collision_box);
+    void render_collision_box(Renderer &renderer);
+
     float &x();
     float &y();
 
@@ -41,6 +53,8 @@ public:
 protected:
     std::int32_t m_width;
     std::int32_t m_height;
+
+    Rect m_collision_box;
 
     std::int32_t m_image_id;
 

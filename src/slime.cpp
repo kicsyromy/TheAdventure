@@ -28,6 +28,7 @@ Slime::Slime(Renderer &renderer, Sound &sound)
   , m_generator{ std::random_device{}() }
   , m_distribution{ 0, 10 }
 {
+    m_sprite.set_collision_box({ 14, 13, 19, 18 });
     m_sprite.scale_x() *= 2.F;
     m_sprite.scale_y() *= 2.F;
     m_sprite.x() = 100.F;
@@ -167,4 +168,5 @@ void Slime::update(Game &game, const RenderEvent &event)
 void Slime::render(Renderer &renderer)
 {
     m_sprite.render(renderer);
+    m_sprite.render_collision_box(renderer);
 }
