@@ -1,9 +1,14 @@
 #pragma once
 
+class Game;
+
 class IThing
 {
 public:
     virtual ~IThing() = default;
+
+public:
+    virtual void update(Game &game, float attenuation = 1.F) = 0;
 
 public:
     float       &x();

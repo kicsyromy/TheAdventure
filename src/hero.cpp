@@ -24,7 +24,6 @@ static constexpr std::int32_t ATTACK_FRAMES = 4;
 Hero::Hero(Renderer &renderer, Sound &sound)
   : m_sprite{ resource_player, resource_player_size, renderer }
 {
-    m_sprite.set_collision_box({ 15, 19, 19, 24 });
     m_sprite.scale_x() *= 2.F;
     m_sprite.scale_y() *= 2.F;
     m_sprite.set_sprite_set(SpriteSet::IdleDown);
@@ -64,7 +63,7 @@ void Hero::attack(Sound &sound)
     sound.play_sample(m_attack_sound_id);
 }
 
-void Hero::update(Game &game, const RenderEvent &event)
+void Hero::update(Game &game, float attenuation)
 {
     if (m_is_attacking && m_sprite.current_frame() == ATTACK_FRAMES - 1)
     {
@@ -75,7 +74,7 @@ void Hero::update(Game &game, const RenderEvent &event)
 
     if (game.is_key_pressed(KeyCode::Up))
     {
-        m_sprite.y() -= 120.F * event.seconds_elapsed;
+        m_sprite.y() -= 120.F * attenuation;
         m_sprite.set_sprite_set(SpriteSet::RunningUp);
         m_orientation = Orientation::Up;
 
@@ -84,7 +83,7 @@ void Hero::update(Game &game, const RenderEvent &event)
 
     if (game.is_key_pressed(KeyCode::Down))
     {
-        m_sprite.y() += 120.F * event.seconds_elapsed;
+        m_sprite.y() += 120.F * attenuation;
         m_sprite.set_sprite_set(SpriteSet::RunningDown);
         m_orientation = Orientation::Down;
 
@@ -93,7 +92,7 @@ void Hero::update(Game &game, const RenderEvent &event)
 
     if (game.is_key_pressed(KeyCode::Left))
     {
-        m_sprite.x() -= 120.F * event.seconds_elapsed;
+        m_sprite.x() -= 120.F * attenuation;
         m_sprite.set_sprite_set(SpriteSet::RunningRight, true);
         m_orientation = Orientation::Left;
 
@@ -102,7 +101,7 @@ void Hero::update(Game &game, const RenderEvent &event)
 
     if (game.is_key_pressed(KeyCode::Right))
     {
-        m_sprite.x() += 120.F * event.seconds_elapsed;
+        m_sprite.x() += 120.F * attenuation;
         m_sprite.set_sprite_set(SpriteSet::RunningRight);
         m_orientation = Orientation::Right;
 
@@ -139,16 +138,7 @@ void Hero::update(Game &game, const RenderEvent &event)
 void Hero::render(Renderer &renderer)
 {
     m_sprite.render(renderer);
-    m_sprite.render_collision_box(renderer, m_is_colliding);
 }
 
-const Sprite &Hero::sprite() const
-{
-    return m_sprite;
-}
-
-bool Hero::is_colliding(const Sprite &sprite)
-{
-    m_is_colliding = m_sprite.is_colliding(sprite);
-    return m_is_colliding;
-}
+void Hero::handle_input()
+{}

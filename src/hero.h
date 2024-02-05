@@ -2,11 +2,17 @@
 
 #include "animated_sprite.h"
 #include "events.h"
+#include "i_collidable.h"
+#include "i_input_handler.h"
+#include "i_renderable.h"
 #include "sound.h"
 
 class Game;
 
 class Hero
+  : public IRenderable
+  , public IInputHandler
+  , public ICollidable
 {
 private:
     enum class Orientation
@@ -20,11 +26,11 @@ private:
 public:
     Hero(Renderer &renderer, Sound &sound);
 
-    void          attack(Sound &sound);
-    void          update(Game &game, const RenderEvent &event);
-    void          render(Renderer &renderer);
-    const Sprite &sprite() const;
-    bool          is_colliding(const Sprite &sprite);
+    void attack(Sound &sound);
+
+    void update(Game &game, float attenuation = 1.F) override;
+    void handle_input() override;
+    void render(Renderer &renderer) override;
 
 private:
     AnimatedSprite m_sprite;
@@ -32,6 +38,4 @@ private:
     bool           m_is_attacking{ false };
     bool           m_is_moving{ false };
     std::int32_t   m_attack_sound_id{ -1 };
-
-    bool m_is_colliding{ false };
 };

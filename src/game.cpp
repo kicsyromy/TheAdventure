@@ -22,12 +22,12 @@ void Game::render(Renderer &renderer, const RenderEvent &event)
     renderer.clear();
 
     m_slime->update(*this, event);
-    m_hero->update(*this, event);
+    m_hero->update(*this, event.seconds_elapsed);
 
-    m_slime->is_colliding(m_hero->sprite());
-    m_hero->is_colliding(m_slime->sprite());
+    // m_slime->is_colliding(m_hero->sprite());
+    // m_hero->is_colliding(m_slime->sprite());
 
-    m_slime->render(renderer);
+    // m_slime->render(renderer);
     m_hero->render(renderer);
 
     fps_timer += event.seconds_elapsed;
