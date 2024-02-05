@@ -1,6 +1,6 @@
 #include "i_collidable.h"
 
-Rect &ICollidable::get_collision_box() const
+const Rect &ICollidable::get_collision_box() const
 {
     return m_collision_box;
 }

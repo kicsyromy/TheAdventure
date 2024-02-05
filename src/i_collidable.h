@@ -14,8 +14,8 @@ struct Rect
 class ICollidable : public IThing
 {
 public:
-    virtual Rect &get_collision_box() const;
-    virtual void  set_collision_box(Rect collision_box);
+    virtual const Rect &get_collision_box() const;
+    virtual void        set_collision_box(Rect collision_box);
 
     virtual void render_collision_box(Renderer &renderer, bool is_colliding = false);
 
