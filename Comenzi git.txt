@@ -1,0 +1,12 @@
+git status
+git add .
+git add "nume"
+git commit -m " mesaj"
+git push
+git branch
+git branch "nume"
+git push --set-upstream origin "nume"
+git checkout "nume branch"
+git branch -d
+git log
+git pull
