@@ -8,6 +8,8 @@ add_executable (
     game.cpp
     hero.cpp
     hero.h
+    i_thing.h
+    i_thing.cpp
     main.cpp
     renderer.h
     renderer.cpp
