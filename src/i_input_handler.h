@@ -2,7 +2,7 @@
 
 #include "i_thing.h"
 
-class IInputHandler : public IThing
+class IInputHandler
 {
 public:
     virtual void handle_input() = 0;

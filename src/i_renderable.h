@@ -3,7 +3,7 @@
 #include "i_thing.h"
 #include "renderer.h"
 
-class IRenderable : public IThing
+class IRenderable
 {
 public:
     virtual void render(Renderer &renderer) = 0;

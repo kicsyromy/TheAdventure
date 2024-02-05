@@ -3,6 +3,7 @@
 #include "animated_sprite.h"
 #include "codes.h"
 #include "hero.h"
+#include "i_thing.h"
 #include "slime.h"
 #include "sound.h"
 #include "sprite.h"
@@ -74,6 +75,8 @@ private:
 
     std::int32_t m_bg_music_id{ -1 };
 
-    std::optional<Hero>  m_hero{ std::nullopt };
-    std::optional<Slime> m_slime{ std::nullopt };
+    std::vector<std::unique_ptr<IThing>> m_things;
+    std::vector<IRenderable *>           m_renderables;
+    std::vector<ICollidable *>           m_collidables;
+    std::vector<IInputHandler *>         m_input_handlers;
 };
