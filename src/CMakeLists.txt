@@ -6,8 +6,12 @@ add_executable (
     events.h
     game.h
     game.cpp
-    hero.cpp
     hero.h
+    hero.cpp
+    i_collidable.h
+    i_collidable.cpp
+    i_renderable.h
+    i_renderable.cpp
     i_thing.h
     i_thing.cpp
     main.cpp

@@ -1,19 +1,24 @@
 #pragma once
 
-#include <cstdint>
-
 class IThing
 {
 public:
     virtual ~IThing() = default;
 
 public:
-    std::int32_t       &x();
-    const std::int32_t &x() const;
-    std::int32_t       &y();
-    const std::int32_t &y() const;
+    float       &x();
+    const float &x() const;
+    float       &y();
+    const float &y() const;
+    float       &scale_x();
+    const float &scale_x() const;
+    float       &scale_y();
+    const float &scale_y() const;
 
 private:
-    std::int32_t m_x;
-    std::int32_t m_y;
+    float m_x{ 0.F };
+    float m_y{ 0.F };
+
+    float m_scale_x{ 1.F };
+    float m_scale_y{ 1.F };
 };
