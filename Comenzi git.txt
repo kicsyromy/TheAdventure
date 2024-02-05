@@ -10,3 +10,4 @@ git checkout "nume branch"
 git branch -d
 git log
 git pull
+git stash
