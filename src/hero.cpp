@@ -18,8 +18,9 @@ enum SpriteSet
     Death
 };
 
-static constexpr std::int32_t MAX_FRAMES    = 6;
-static constexpr std::int32_t ATTACK_FRAMES = 4;
+static constexpr std::int32_t MAX_FRAMES            = 6;
+static constexpr std::int32_t ATTACK_FRAMES         = 4;
+static constexpr Rect         DEFAULT_COLLISION_BOX = { 15, 20, 19, 24 };
 
 Hero::Hero(Renderer &renderer, Sound &sound)
   : m_sprite{ resource_player, resource_player_size, renderer }
@@ -31,7 +32,7 @@ Hero::Hero(Renderer &renderer, Sound &sound)
     width()  = m_sprite.width() / MAX_FRAMES;
     height() = m_sprite.height() / MAX_FRAMES;
 
-    set_collision_box({ 15, 20, 19, 24 });
+    set_collision_box(DEFAULT_COLLISION_BOX);
 
     m_sprite.set_sprite_set(SpriteSet::IdleDown);
     m_sprite.set_total_frames(MAX_FRAMES);
@@ -53,10 +54,16 @@ void Hero::attack()
     }
     case Orientation::Down: {
         m_sprite.set_sprite_set(SpriteSet::AttackingDown);
+
+        auto cb   = DEFAULT_COLLISION_BOX;
+        cb.height = 29;
+        set_collision_box(cb);
+
         break;
     }
     case Orientation::Left: {
         m_sprite.set_sprite_set(SpriteSet::AttackingRight, true);
+
         break;
     }
     case Orientation::Right: {
@@ -75,6 +82,7 @@ void Hero::update(Game &game, float attenuation)
     if (m_is_attacking && m_sprite.current_frame() == ATTACK_FRAMES - 1)
     {
         m_is_attacking = false;
+        set_collision_box(DEFAULT_COLLISION_BOX);
     }
 
     m_is_moving = false;
