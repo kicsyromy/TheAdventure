@@ -17,6 +17,11 @@ void Game::load_assets(Renderer &renderer)
     m_renderables.push_back(hero);
     m_collidables.push_back(hero);
     m_input_handlers.push_back(hero);
+
+    auto *slime = new Slime{ renderer, m_sound };
+    m_things.emplace_back(slime);
+    m_renderables.push_back(slime);
+    m_collidables.push_back(slime);
 }
 
 void Game::render(Renderer &renderer, const RenderEvent &event)

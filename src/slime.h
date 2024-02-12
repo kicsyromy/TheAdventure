@@ -2,6 +2,8 @@
 
 #include "animated_sprite.h"
 #include "events.h"
+#include "i_collidable.h"
+#include "i_renderable.h"
 #include "sound.h"
 
 #include <random>
@@ -9,6 +11,8 @@
 class Game;
 
 class Slime
+  : public IRenderable
+  , public ICollidable
 {
 private:
     enum class Orientation
@@ -28,11 +32,10 @@ private:
 public:
     Slime(Renderer &renderer, Sound &sound);
 
-    void          attack(Sound &sound);
-    void          update(Game &game, const RenderEvent &event);
-    void          render(Renderer &renderer);
-    const Sprite &sprite() const;
-    bool          is_colliding(const Sprite &sprite);
+    void attack();
+
+    void update(Game &game, float attenuation = 1.F) override;
+    void render(Renderer &renderer) override;
 
 private:
     AnimatedSprite m_sprite;
@@ -48,5 +51,5 @@ private:
     std::mt19937                    m_generator;
     std::uniform_int_distribution<> m_distribution;
 
-    bool m_is_colliding{ false };
+    Sound &m_sound;
 };

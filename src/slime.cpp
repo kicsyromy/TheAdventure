@@ -27,6 +27,7 @@ Slime::Slime(Renderer &renderer, Sound &sound)
   : m_sprite{ resource_slime, resource_slime_size, renderer }
   , m_generator{ std::random_device{}() }
   , m_distribution{ 0, 10 }
+  , m_sound{ sound }
 {
     m_sprite.scale_x() *= 2.F;
     m_sprite.scale_y() *= 2.F;
@@ -40,7 +41,7 @@ Slime::Slime(Renderer &renderer, Sound &sound)
         sound.load_sample(resource__07_human_atk_sword_1, resource__07_human_atk_sword_1_size);
 }
 
-void Slime::attack(Sound &sound)
+void Slime::attack()
 {
     m_is_attacking = true;
 
@@ -58,10 +59,10 @@ void Slime::attack(Sound &sound)
 
     m_sprite.set_total_frames(MAX_FRAMES, MAX_FRAMES - ATTACK_FRAMES);
     m_sprite.reset();
-    sound.play_sample(m_attack_sound_id);
+    m_sound.play_sample(m_attack_sound_id);
 }
 
-void Slime::update(Game &game, const RenderEvent &event)
+void Slime::update(Game &game, float attenuation)
 {
     if (m_is_attacking && m_sprite.current_frame() == ATTACK_FRAMES - 1)
     {
@@ -106,7 +107,7 @@ void Slime::update(Game &game, const RenderEvent &event)
         switch (m_direction)
         {
         case Direction::Up: {
-            m_sprite.y() -= 120.F * event.seconds_elapsed;
+            m_sprite.y() -= 120.F * attenuation;
             m_sprite.set_sprite_set(SpriteSet::JumpingRight, m_orientation == Orientation::Left);
             m_sprite.set_total_frames(MAX_FRAMES, MAX_FRAMES - JUMP_FRAMES);
 
@@ -114,7 +115,7 @@ void Slime::update(Game &game, const RenderEvent &event)
             break;
         }
         case Direction::Down: {
-            m_sprite.y() += 120.F * event.seconds_elapsed;
+            m_sprite.y() += 120.F * attenuation;
             m_sprite.set_sprite_set(SpriteSet::JumpingRight, m_orientation == Orientation::Left);
             m_sprite.set_total_frames(MAX_FRAMES, MAX_FRAMES - JUMP_FRAMES);
 
@@ -122,7 +123,7 @@ void Slime::update(Game &game, const RenderEvent &event)
             break;
         }
         case Direction::Left: {
-            m_sprite.x() -= 120.F * event.seconds_elapsed;
+            m_sprite.x() -= 120.F * attenuation;
             m_sprite.set_sprite_set(SpriteSet::JumpingRight, true);
             m_sprite.set_total_frames(MAX_FRAMES, MAX_FRAMES - JUMP_FRAMES);
             m_orientation = Orientation::Left;
@@ -131,7 +132,7 @@ void Slime::update(Game &game, const RenderEvent &event)
             break;
         }
         case Direction::Right: {
-            m_sprite.x() += 120.F * event.seconds_elapsed;
+            m_sprite.x() += 120.F * attenuation;
             m_sprite.set_sprite_set(SpriteSet::JumpingRight);
             m_sprite.set_total_frames(MAX_FRAMES, MAX_FRAMES - JUMP_FRAMES);
             m_orientation = Orientation::Right;
@@ -167,14 +168,4 @@ void Slime::update(Game &game, const RenderEvent &event)
 void Slime::render(Renderer &renderer)
 {
     m_sprite.render(renderer);
-}
-
-const Sprite &Slime::sprite() const
-{
-    return m_sprite;
-}
-
-bool Slime::is_colliding(const Sprite &sprite)
-{
-    return m_is_colliding;
 }
