@@ -20,7 +20,7 @@ enum SpriteSet
 
 static constexpr std::int32_t MAX_FRAMES            = 6;
 static constexpr std::int32_t ATTACK_FRAMES         = 4;
-static constexpr Rect         DEFAULT_COLLISION_BOX = { 15, 20, 19, 24 };
+static constexpr Rect         DEFAULT_COLLISION_BOX = { 15, 30, 19, 14 };
 
 Hero::Hero(Renderer &renderer, Sound &sound)
   : m_sprite{ resource_player, resource_player_size, renderer }
@@ -50,13 +50,19 @@ void Hero::attack()
     {
     case Orientation::Up: {
         m_sprite.set_sprite_set(SpriteSet::AttackingUp);
+
+        auto cb = DEFAULT_COLLISION_BOX;
+        cb.y -= 10;
+        cb.height += 10;
+        set_collision_box(cb);
+
         break;
     }
     case Orientation::Down: {
         m_sprite.set_sprite_set(SpriteSet::AttackingDown);
 
-        auto cb   = DEFAULT_COLLISION_BOX;
-        cb.height = 29;
+        auto cb = DEFAULT_COLLISION_BOX;
+        cb.height += 5;
         set_collision_box(cb);
 
         break;
@@ -64,10 +70,20 @@ void Hero::attack()
     case Orientation::Left: {
         m_sprite.set_sprite_set(SpriteSet::AttackingRight, true);
 
+        auto cb = DEFAULT_COLLISION_BOX;
+        cb.x -= 9;
+        cb.width += 9;
+        set_collision_box(cb);
+
         break;
     }
     case Orientation::Right: {
         m_sprite.set_sprite_set(SpriteSet::AttackingRight);
+
+        auto cb = DEFAULT_COLLISION_BOX;
+        cb.width += 9;
+        set_collision_box(cb);
+
         break;
     }
     }
