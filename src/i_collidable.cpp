@@ -1,5 +1,7 @@
 #include "i_collidable.h"
 
+#include <cmath>
+
 const Rect &ICollidable::get_collision_box() const
 {
     return m_collision_box;
