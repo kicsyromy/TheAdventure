@@ -26,11 +26,12 @@ private:
 public:
     Hero(Renderer &renderer, Sound &sound);
 
-    void attack(Sound &sound);
+    void attack();
 
     void update(Game &game, float attenuation = 1.F) override;
-    void handle_input() override;
     void render(Renderer &renderer) override;
+    void on_key_pressed(const KeyPressEvent &event) override;
+    void on_key_released(const KeyReleaseEvent &event) override;
 
 private:
     AnimatedSprite m_sprite;
@@ -38,4 +39,6 @@ private:
     bool           m_is_attacking{ false };
     bool           m_is_moving{ false };
     std::int32_t   m_attack_sound_id{ -1 };
+
+    Sound &m_sound;
 };

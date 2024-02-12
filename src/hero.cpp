@@ -23,6 +23,7 @@ static constexpr std::int32_t ATTACK_FRAMES = 4;
 
 Hero::Hero(Renderer &renderer, Sound &sound)
   : m_sprite{ resource_player, resource_player_size, renderer }
+  , m_sound{ sound }
 {
     m_sprite.scale_x() *= 2.F;
     m_sprite.scale_y() *= 2.F;
@@ -34,7 +35,7 @@ Hero::Hero(Renderer &renderer, Sound &sound)
         sound.load_sample(resource__07_human_atk_sword_1, resource__07_human_atk_sword_1_size);
 }
 
-void Hero::attack(Sound &sound)
+void Hero::attack()
 {
     m_is_attacking = true;
 
@@ -60,7 +61,7 @@ void Hero::attack(Sound &sound)
 
     m_sprite.set_total_frames(MAX_FRAMES, MAX_FRAMES - ATTACK_FRAMES);
     m_sprite.reset();
-    sound.play_sample(m_attack_sound_id);
+    m_sound.play_sample(m_attack_sound_id);
 }
 
 void Hero::update(Game &game, float attenuation)
@@ -140,5 +141,13 @@ void Hero::render(Renderer &renderer)
     m_sprite.render(renderer);
 }
 
-void Hero::handle_input()
+void Hero::on_key_pressed(const KeyPressEvent &event)
+{
+    if (event.key_code == KeyCode::Space)
+    {
+        attack();
+    }
+}
+
+void Hero::on_key_released(const KeyReleaseEvent &event)
 {}

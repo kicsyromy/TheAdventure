@@ -87,14 +87,19 @@ void Game::on_mouse_wheel(const MouseWheelEvent &event)
 
 void Game::on_key_pressed(const KeyPressEvent &event)
 {
-    if (event.key_code == KeyCode::Space)
+    for (auto &input_handler : m_input_handlers)
     {
-        //        m_hero->attack(m_sound);
+        input_handler->on_key_pressed(event);
     }
 }
 
 void Game::on_key_released(const KeyReleaseEvent &event)
-{}
+{
+    for (auto &input_handler : m_input_handlers)
+    {
+        input_handler->on_key_released(event);
+    }
+}
 
 bool Game::is_mouse_button_pressed(MouseButton button) const
 {

@@ -1,9 +1,10 @@
 #pragma once
 
-#include "i_thing.h"
+#include "events.h"
 
 class IInputHandler
 {
 public:
-    virtual void handle_input() = 0;
+    virtual void on_key_pressed(const KeyPressEvent &event)    = 0;
+    virtual void on_key_released(const KeyReleaseEvent &event) = 0;
 };
