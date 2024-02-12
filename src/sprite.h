@@ -44,6 +44,9 @@ public:
     float &x();
     float &y();
 
+    float width() const;
+    float height() const;
+
     float &scale_x();
     float &scale_y();
 

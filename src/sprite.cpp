@@ -33,6 +33,16 @@ float &Sprite::y()
     return m_pos_y;
 }
 
+float Sprite::width() const
+{
+    return static_cast<float>(m_width);
+}
+
+float Sprite::height() const
+{
+    return static_cast<float>(m_height);
+}
+
 float &Sprite::scale_x()
 {
     return m_scale_x;

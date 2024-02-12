@@ -15,6 +15,10 @@ public:
     const float &x() const;
     float       &y();
     const float &y() const;
+    float       &width();
+    const float &width() const;
+    float       &height();
+    const float &height() const;
     float       &scale_x();
     const float &scale_x() const;
     float       &scale_y();
@@ -23,6 +27,9 @@ public:
 private:
     float m_x{ 0.F };
     float m_y{ 0.F };
+
+    float m_width{ 0.F };
+    float m_height{ 0.F };
 
     float m_scale_x{ 1.F };
     float m_scale_y{ 1.F };

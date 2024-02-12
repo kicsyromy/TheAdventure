@@ -10,6 +10,26 @@ const float &IThing::x() const
     return m_x;
 }
 
+float &IThing::width()
+{
+    return m_width;
+}
+
+const float &IThing::width() const
+{
+    return m_width;
+}
+
+float &IThing::height()
+{
+    return m_height;
+}
+
+const float &IThing::height() const
+{
+    return m_height;
+}
+
 float &IThing::y()
 {
     return m_y;

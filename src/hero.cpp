@@ -25,8 +25,14 @@ Hero::Hero(Renderer &renderer, Sound &sound)
   : m_sprite{ resource_player, resource_player_size, renderer }
   , m_sound{ sound }
 {
-    m_sprite.scale_x() *= 2.F;
-    m_sprite.scale_y() *= 2.F;
+    scale_x() *= 2.F;
+    scale_y() *= 2.F;
+
+    width()  = m_sprite.width() / MAX_FRAMES;
+    height() = m_sprite.height() / MAX_FRAMES;
+
+    set_collision_box({ 15, 20, 19, 24 });
+
     m_sprite.set_sprite_set(SpriteSet::IdleDown);
     m_sprite.set_total_frames(MAX_FRAMES);
     m_sprite.set_frame_time(std::chrono::milliseconds{ 100 });
@@ -75,7 +81,7 @@ void Hero::update(Game &game, float attenuation)
 
     if (game.is_key_pressed(KeyCode::Up))
     {
-        m_sprite.y() -= 120.F * attenuation;
+        y() -= 120.F * attenuation;
         m_sprite.set_sprite_set(SpriteSet::RunningUp);
         m_orientation = Orientation::Up;
 
@@ -84,7 +90,7 @@ void Hero::update(Game &game, float attenuation)
 
     if (game.is_key_pressed(KeyCode::Down))
     {
-        m_sprite.y() += 120.F * attenuation;
+        y() += 120.F * attenuation;
         m_sprite.set_sprite_set(SpriteSet::RunningDown);
         m_orientation = Orientation::Down;
 
@@ -93,7 +99,7 @@ void Hero::update(Game &game, float attenuation)
 
     if (game.is_key_pressed(KeyCode::Left))
     {
-        m_sprite.x() -= 120.F * attenuation;
+        x() -= 120.F * attenuation;
         m_sprite.set_sprite_set(SpriteSet::RunningRight, true);
         m_orientation = Orientation::Left;
 
@@ -102,7 +108,7 @@ void Hero::update(Game &game, float attenuation)
 
     if (game.is_key_pressed(KeyCode::Right))
     {
-        m_sprite.x() += 120.F * attenuation;
+        x() += 120.F * attenuation;
         m_sprite.set_sprite_set(SpriteSet::RunningRight);
         m_orientation = Orientation::Right;
 
@@ -138,6 +144,12 @@ void Hero::update(Game &game, float attenuation)
 
 void Hero::render(Renderer &renderer)
 {
+    m_sprite.x() = x();
+    m_sprite.y() = y();
+
+    m_sprite.scale_x() = scale_x();
+    m_sprite.scale_y() = scale_y();
+
     m_sprite.render(renderer);
 }
 
