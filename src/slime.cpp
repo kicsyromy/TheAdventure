@@ -182,3 +182,25 @@ void Slime::render(Renderer &renderer)
 
     m_sprite.render(renderer);
 }
+
+void Slime::take_damage(float damage)
+{
+    m_should_be_destroyed = true;
+}
+
+bool Slime::should_be_destroyed()
+{
+    return m_should_be_destroyed;
+}
+
+bool Slime::is_colliding(const ICollidable &other)
+{
+    const auto is_colliding = ICollidable::is_colliding(other);
+
+    if (is_colliding)
+    {
+        m_should_be_destroyed = true;
+    }
+
+    return is_colliding;
+}

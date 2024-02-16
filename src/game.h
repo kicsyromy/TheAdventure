@@ -75,8 +75,9 @@ private:
 
     std::int32_t m_bg_music_id{ -1 };
 
-    std::vector<std::unique_ptr<IThing>> m_things;
-    std::vector<IRenderable *>           m_renderables;
-    std::vector<ICollidable *>           m_collidables;
-    std::vector<IInputHandler *>         m_input_handlers;
+    std::vector<std::pair<std::int32_t, std::unique_ptr<IThing>>> m_things;
+    std::vector<std::pair<std::int32_t, IRenderable *>>           m_renderables;
+    std::vector<std::pair<std::int32_t, ICollidable *>>           m_collidables;
+    std::vector<std::pair<std::int32_t, IInputHandler *>>         m_input_handlers;
+    std::vector<std::pair<std::int32_t, IDestroyable *>>          m_destroyables;
 };

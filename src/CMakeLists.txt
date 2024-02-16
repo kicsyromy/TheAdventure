@@ -10,6 +10,7 @@ add_executable (
     hero.cpp
     i_collidable.h
     i_collidable.cpp
+    i_destroyable.h
     i_input_handler.h
     i_input_handler.cpp
     i_renderable.h

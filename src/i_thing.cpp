@@ -1,5 +1,16 @@
 #include "i_thing.h"
 
+static std::int32_t s_next_id{ 0 };
+
+IThing::IThing()
+  : m_id{ s_next_id++ }
+{}
+
+std::int32_t IThing::id() const
+{
+    return m_id;
+}
+
 float &IThing::x()
 {
     return m_x;

@@ -5,6 +5,7 @@
 
 #include <fmt/format.h>
 
+#include <algorithm>
 #include <unordered_set>
 
 Game::~Game() = default;
@@ -19,16 +20,17 @@ void Game::load_assets(Renderer &renderer)
         auto *slime = new Slime{ renderer, m_sound };
         slime->x() += i * 64;
         slime->y() += i * 45;
-        m_things.emplace_back(slime);
-        m_renderables.push_back(slime);
-        m_collidables.push_back(slime);
+        m_things.emplace_back(slime->id(), slime);
+        m_renderables.emplace_back(slime->id(), slime);
+        m_collidables.emplace_back(slime->id(), slime);
+        m_destroyables.emplace_back(slime->id(), slime);
     }
 
     auto *hero = new Hero{ renderer, m_sound };
-    m_things.emplace_back(hero);
-    m_renderables.push_back(hero);
-    m_collidables.push_back(hero);
-    m_input_handlers.push_back(hero);
+    m_things.emplace_back(hero->id(), hero);
+    m_renderables.emplace_back(hero->id(), hero);
+    m_collidables.emplace_back(hero->id(), hero);
+    m_input_handlers.emplace_back(hero->id(), hero);
 }
 
 void Game::render(Renderer &renderer, const RenderEvent &event)
@@ -36,29 +38,83 @@ void Game::render(Renderer &renderer, const RenderEvent &event)
     renderer.set_color({ 127, 127, 127, 255 });
     renderer.clear();
 
-    for (const auto &thing : m_things)
+    std::vector<std::size_t> destroyed_indices;
+    for (std::size_t i = 0; i < m_destroyables.size(); ++i)
+    {
+        if (m_destroyables[i].second->should_be_destroyed())
+        {
+            const auto id = m_destroyables[i].first;
+
+            destroyed_indices.push_back(i);
+
+            auto render_it =
+                std::find_if(m_renderables.begin(), m_renderables.end(), [id](auto &renderable) {
+                    return renderable.first == id;
+                });
+            if (render_it != m_renderables.end())
+            {
+                m_renderables.erase(render_it);
+            }
+
+            auto collide_it =
+                std::find_if(m_collidables.begin(), m_collidables.end(), [id](auto &collidable) {
+                    return collidable.first == id;
+                });
+            if (collide_it != m_collidables.end())
+            {
+                m_collidables.erase(collide_it);
+            }
+
+            auto input_it =
+                std::find_if(m_input_handlers.begin(),
+                             m_input_handlers.end(),
+                             [id](auto &input_handler) { return input_handler.first == id; });
+            if (input_it != m_input_handlers.end())
+            {
+                m_input_handlers.erase(input_it);
+            }
+
+            auto thing_it = std::find_if(m_things.begin(), m_things.end(), [id](auto &thing) {
+                return thing.first == id;
+            });
+            m_things.erase(thing_it);
+        }
+    }
+
+    for (auto i = 0; i < destroyed_indices.size(); ++i)
+    {
+        m_destroyables.erase(m_destroyables.begin() + destroyed_indices[i] - i);
+    }
+
+    for (const auto &[id, thing] : m_things)
     {
         thing->update(*this, event.seconds_elapsed);
     }
 
-    for (const auto &renderable : m_renderables)
+    for (const auto &[id, renderable] : m_renderables)
     {
         renderable->render(renderer);
     }
 
     std::unordered_set<ICollidable *> colliding;
-    std::unordered_set<ICollidable *> not_colliding{ m_collidables.begin(), m_collidables.end() };
+    std::unordered_set<ICollidable *> not_colliding;
+    not_colliding.reserve(m_collidables.size());
+    for (std::size_t i = 0; i < m_collidables.size(); ++i)
+    {
+        not_colliding.insert(m_collidables[i].second);
+    }
+
     for (std::size_t i = 0; i < m_collidables.size() - 1; ++i)
     {
         for (std::size_t j = i + 1; j < m_collidables.size(); ++j)
         {
-            if (m_collidables[i]->is_colliding(*m_collidables[j]))
+            if (m_collidables[i].second->is_colliding(*m_collidables[j].second))
             {
-                colliding.insert(m_collidables[i]);
-                colliding.insert(m_collidables[j]);
+                colliding.insert(m_collidables[i].second);
+                colliding.insert(m_collidables[j].second);
 
-                not_colliding.erase(m_collidables[i]);
-                not_colliding.erase(m_collidables[j]);
+                not_colliding.erase(m_collidables[i].second);
+                not_colliding.erase(m_collidables[j].second);
             }
         }
     }
@@ -126,7 +182,7 @@ void Game::on_mouse_wheel(const MouseWheelEvent &event)
 
 void Game::on_key_pressed(const KeyPressEvent &event)
 {
-    for (auto &input_handler : m_input_handlers)
+    for (auto &[id, input_handler] : m_input_handlers)
     {
         input_handler->on_key_pressed(event);
     }
@@ -134,7 +190,7 @@ void Game::on_key_pressed(const KeyPressEvent &event)
 
 void Game::on_key_released(const KeyReleaseEvent &event)
 {
-    for (auto &input_handler : m_input_handlers)
+    for (auto &[id, input_handler] : m_input_handlers)
     {
         input_handler->on_key_released(event);
     }

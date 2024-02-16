@@ -18,7 +18,7 @@ public:
     void        set_collision_box(Rect collision_box);
 
     virtual void render_collision_box(Renderer &renderer, bool is_colliding = false);
-    virtual bool is_colliding(const ICollidable &other) const;
+    virtual bool is_colliding(const ICollidable &other);
 
 private:
     Rect m_collision_box;

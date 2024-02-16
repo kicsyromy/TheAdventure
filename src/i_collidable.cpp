@@ -42,7 +42,7 @@ void ICollidable::render_collision_box(Renderer &renderer, bool is_colliding)
                        m_collision_box.height * scale_y());
 }
 
-bool ICollidable::is_colliding(const ICollidable &other) const
+bool ICollidable::is_colliding(const ICollidable &other)
 {
     auto r1 = Rect{ x() + m_collision_box.x * scale_x(),
                     y() + m_collision_box.y * scale_y(),
