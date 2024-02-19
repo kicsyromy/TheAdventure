@@ -80,4 +80,5 @@ private:
     std::vector<std::pair<std::int32_t, ICollidable *>>           m_collidables;
     std::vector<std::pair<std::int32_t, IInputHandler *>>         m_input_handlers;
     std::vector<std::pair<std::int32_t, IDestroyable *>>          m_destroyables;
+    std::vector<std::pair<std::int32_t, IAttacker *>>             m_attackers;
 };

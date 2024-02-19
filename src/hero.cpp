@@ -93,6 +93,11 @@ void Hero::attack()
     m_sound.play_sample(m_attack_sound_id);
 }
 
+bool Hero::is_attacking() const
+{
+    return m_is_attacking && m_sprite.current_frame() == ATTACK_FRAMES / 2;
+}
+
 void Hero::update(Game &game, float attenuation)
 {
     if (m_is_attacking && m_sprite.current_frame() == ATTACK_FRAMES - 1)

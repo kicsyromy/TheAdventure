@@ -42,8 +42,6 @@ public:
     void take_damage(float damage) override;
     bool should_be_destroyed() override;
 
-    bool is_colliding(const ICollidable &other) override;
-
 private:
     AnimatedSprite m_sprite;
     Orientation    m_orientation{ Orientation::Left };

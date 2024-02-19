@@ -6,5 +6,8 @@
 class IRenderable
 {
 public:
+    virtual ~IRenderable() = default;
+    
+public:
     virtual void render(Renderer &renderer) = 0;
 };

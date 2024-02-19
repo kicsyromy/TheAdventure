@@ -2,6 +2,7 @@
 
 #include "animated_sprite.h"
 #include "events.h"
+#include "i_attacker.h"
 #include "i_collidable.h"
 #include "i_input_handler.h"
 #include "i_renderable.h"
@@ -13,6 +14,7 @@ class Hero
   : public IRenderable
   , public IInputHandler
   , public ICollidable
+  , public IAttacker
 {
 private:
     enum class Orientation
@@ -27,6 +29,7 @@ public:
     Hero(Renderer &renderer, Sound &sound);
 
     void attack();
+    bool is_attacking() const override;
 
     void update(Game &game, float attenuation = 1.F) override;
     void render(Renderer &renderer) override;
