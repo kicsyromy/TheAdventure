@@ -1,6 +1,5 @@
 #pragma once
 
-#include "i_thing.h"
 #include "renderer.h"
 
 struct Rect
@@ -11,7 +10,7 @@ struct Rect
     float height;
 };
 
-class ICollidable : public IThing
+class ICollidable
 {
 public:
     virtual ~ICollidable() = default;
@@ -22,6 +21,12 @@ public:
 
     virtual void render_collision_box(Renderer &renderer, bool is_colliding = false);
     virtual bool is_colliding(const ICollidable &other);
+
+protected:
+    virtual float c_x() const       = 0;
+    virtual float c_y() const       = 0;
+    virtual float c_scale_x() const = 0;
+    virtual float c_scale_y() const = 0;
 
 private:
     Rect m_collision_box;

@@ -23,10 +23,11 @@ void ICollidable::render_collision_box(Renderer &renderer, bool is_colliding)
     {
         renderer.set_color({ 255, 0, 0, 255 });
     }
-    renderer.draw_rect(static_cast<std::int32_t>(std::round(x() + m_collision_box.x * scale_x())),
-                       static_cast<std::int32_t>(std::round(y() + m_collision_box.y * scale_y())),
-                       m_collision_box.width * scale_x(),
-                       m_collision_box.height * scale_y());
+    renderer.draw_rect(
+        static_cast<std::int32_t>(std::round(c_x() + m_collision_box.x * c_scale_x())),
+        static_cast<std::int32_t>(std::round(c_y() + m_collision_box.y * c_scale_y())),
+        m_collision_box.width * c_scale_x(),
+        m_collision_box.height * c_scale_y());
 
     if (!is_colliding)
     {
@@ -36,23 +37,24 @@ void ICollidable::render_collision_box(Renderer &renderer, bool is_colliding)
     {
         renderer.set_color({ 255, 0, 0, 64 });
     }
-    renderer.fill_rect(static_cast<std::int32_t>(std::round(x() + m_collision_box.x * scale_x())),
-                       static_cast<std::int32_t>(std::round(y() + m_collision_box.y * scale_y())),
-                       m_collision_box.width * scale_x(),
-                       m_collision_box.height * scale_y());
+    renderer.fill_rect(
+        static_cast<std::int32_t>(std::round(c_x() + m_collision_box.x * c_scale_x())),
+        static_cast<std::int32_t>(std::round(c_y() + m_collision_box.y * c_scale_y())),
+        m_collision_box.width * c_scale_x(),
+        m_collision_box.height * c_scale_y());
 }
 
 bool ICollidable::is_colliding(const ICollidable &other)
 {
-    auto r1 = Rect{ x() + m_collision_box.x * scale_x(),
-                    y() + m_collision_box.y * scale_y(),
-                    m_collision_box.width * scale_x(),
-                    m_collision_box.height * scale_y() };
+    auto r1 = Rect{ c_x() + m_collision_box.x * c_scale_x(),
+                    c_y() + m_collision_box.y * c_scale_y(),
+                    m_collision_box.width * c_scale_x(),
+                    m_collision_box.height * c_scale_y() };
 
-    auto r2 = Rect{ other.x() + other.m_collision_box.x * other.scale_x(),
-                    other.y() + other.m_collision_box.y * other.scale_y(),
-                    other.m_collision_box.width * other.scale_x(),
-                    other.m_collision_box.height * other.scale_y() };
+    auto r2 = Rect{ other.c_x() + other.m_collision_box.x * other.c_scale_x(),
+                    other.c_y() + other.m_collision_box.y * other.c_scale_y(),
+                    other.m_collision_box.width * other.c_scale_x(),
+                    other.m_collision_box.height * other.c_scale_y() };
 
     return r1.x < r2.x + r2.width && r1.x + r1.width > r2.x && r1.y < r2.y + r2.height &&
            r1.y + r1.height > r2.y;

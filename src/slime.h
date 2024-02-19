@@ -12,7 +12,8 @@
 class Game;
 
 class Slime
-  : public IRenderable
+  : public IThing
+  , public IRenderable
   , public ICollidable
   , public IDestroyable
 {
@@ -41,6 +42,12 @@ public:
 
     void take_damage(float damage) override;
     bool should_be_destroyed() override;
+
+private:
+    float c_x() const override;
+    float c_y() const override;
+    float c_scale_x() const override;
+    float c_scale_y() const override;
 
 private:
     AnimatedSprite m_sprite;

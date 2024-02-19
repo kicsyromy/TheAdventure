@@ -6,12 +6,14 @@
 #include "i_collidable.h"
 #include "i_input_handler.h"
 #include "i_renderable.h"
+#include "i_thing.h"
 #include "sound.h"
 
 class Game;
 
 class Hero
-  : public IRenderable
+  : public IThing
+  , public IRenderable
   , public IInputHandler
   , public ICollidable
   , public IAttacker
@@ -35,6 +37,12 @@ public:
     void render(Renderer &renderer) override;
     void on_key_pressed(const KeyPressEvent &event) override;
     void on_key_released(const KeyReleaseEvent &event) override;
+
+private:
+    float c_x() const override;
+    float c_y() const override;
+    float c_scale_x() const override;
+    float c_scale_y() const override;
 
 private:
     AnimatedSprite m_sprite;

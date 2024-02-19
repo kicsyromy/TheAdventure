@@ -18,14 +18,19 @@ public:
 
     float       &x();
     const float &x() const;
+
     float       &y();
     const float &y() const;
+
     float       &width();
     const float &width() const;
+
     float       &height();
     const float &height() const;
+
     float       &scale_x();
     const float &scale_x() const;
+
     float       &scale_y();
     const float &scale_y() const;
 

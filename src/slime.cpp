@@ -192,3 +192,20 @@ bool Slime::should_be_destroyed()
 {
     return m_should_be_destroyed;
 }
+
+float Slime::c_x() const
+{
+    return IThing::x();
+}
+float Slime::c_y() const
+{
+    return IThing::y();
+}
+float Slime::c_scale_x() const
+{
+    return IThing::scale_x();
+}
+float Slime::c_scale_y() const
+{
+    return IThing::scale_y();
+}

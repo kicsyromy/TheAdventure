@@ -192,3 +192,20 @@ void Hero::on_key_pressed(const KeyPressEvent &event)
 
 void Hero::on_key_released(const KeyReleaseEvent &event)
 {}
+
+float Hero::c_x() const
+{
+    return IThing::x();
+}
+float Hero::c_y() const
+{
+    return IThing::y();
+}
+float Hero::c_scale_x() const
+{
+    return IThing::scale_x();
+}
+float Hero::c_scale_y() const
+{
+    return IThing::scale_y();
+}
