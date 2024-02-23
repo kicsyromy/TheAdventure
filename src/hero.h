@@ -30,8 +30,9 @@ private:
 public:
     Hero(Renderer &renderer, Sound &sound);
 
-    void attack();
-    bool is_attacking() const override;
+    void  attack();
+    bool  is_attacking() const override;
+    float attack_power() const override;
 
     void update(Game &game, float attenuation = 1.F) override;
     void render(Renderer &renderer) override;

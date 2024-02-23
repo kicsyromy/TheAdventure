@@ -185,7 +185,14 @@ void Slime::render(Renderer &renderer)
 
 void Slime::take_damage(float damage)
 {
-    m_should_be_destroyed = true;
+    m_health -= damage;
+
+    std::cout << "Slime took " << damage << " damage. Health: " << m_health << std::endl;
+
+    if (m_health <= 0.F)
+    {
+        m_should_be_destroyed = true;
+    }
 }
 
 bool Slime::should_be_destroyed()

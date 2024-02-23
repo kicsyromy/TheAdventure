@@ -133,7 +133,8 @@ void Game::render(Renderer &renderer, const RenderEvent &event)
                                                 [j_id](auto &dest) { return dest.first == j_id; });
                     if (dest_it != m_destroyables.end())
                     {
-                        dest_it->second->take_damage(1.0F);
+                        dest_it->second->take_damage(attacker_i_it->second->attack_power() *
+                                                     event.seconds_elapsed);
                     }
                 }
 
@@ -148,7 +149,8 @@ void Game::render(Renderer &renderer, const RenderEvent &event)
                                                 [i_id](auto &dest) { return dest.first == i_id; });
                     if (dest_it != m_destroyables.end())
                     {
-                        dest_it->second->take_damage(1.0F);
+                        dest_it->second->take_damage(attacker_j_jt->second->attack_power() *
+                                                     event.seconds_elapsed);
                     }
                 }
 

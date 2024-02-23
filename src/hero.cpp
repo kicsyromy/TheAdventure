@@ -95,7 +95,12 @@ void Hero::attack()
 
 bool Hero::is_attacking() const
 {
-    return m_is_attacking && m_sprite.current_frame() == ATTACK_FRAMES / 2;
+    return m_is_attacking && m_sprite.current_frame() >= ATTACK_FRAMES / 2;
+}
+
+float Hero::attack_power() const
+{
+    return 10.F;
 }
 
 void Hero::update(Game &game, float attenuation)

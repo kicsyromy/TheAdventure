@@ -63,7 +63,8 @@ private:
     std::mt19937                    m_generator;
     std::uniform_int_distribution<> m_distribution;
 
-    bool m_should_be_destroyed{ false };
+    float m_health{ 3.F };
+    bool  m_should_be_destroyed{ false };
 
     Sound &m_sound;
 };
