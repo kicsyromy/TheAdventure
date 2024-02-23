@@ -12,6 +12,8 @@ Game::~Game() = default;
 
 void Game::load_assets(Renderer &renderer)
 {
+    m_map.emplace(renderer, 50, 50);
+
     m_bg_music_id = m_sound.load_music(resource_world_bg, resource_world_bg_size);
     m_sound.play_music(m_bg_music_id);
 
@@ -36,8 +38,10 @@ void Game::load_assets(Renderer &renderer)
 
 void Game::render(Renderer &renderer, const RenderEvent &event)
 {
-    renderer.set_color({ 127, 127, 127, 255 });
+    renderer.set_color({ 0, 0, 0, 255 });
     renderer.clear();
+
+    m_map->render();
 
     std::vector<std::size_t> destroyed_indices;
     for (std::size_t i = 0; i < m_destroyables.size(); ++i)

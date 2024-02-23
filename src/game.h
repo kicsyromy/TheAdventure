@@ -4,6 +4,7 @@
 #include "codes.h"
 #include "hero.h"
 #include "i_thing.h"
+#include "map.h"
 #include "slime.h"
 #include "sound.h"
 #include "sprite.h"
@@ -66,6 +67,8 @@ public:
 private:
     const std::uint8_t *const m_mouse_button_states;
     const std::uint8_t *const m_keyboard_state;
+
+    std::optional<Map> m_map;
 
     Sound m_sound;
 

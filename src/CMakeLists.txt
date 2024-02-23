@@ -19,6 +19,8 @@ add_executable (
     i_thing.h
     i_thing.cpp
     main.cpp
+    map.h
+    map.cpp
     renderer.h
     renderer.cpp
     slime.cpp
