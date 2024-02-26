@@ -27,7 +27,7 @@ void Map::render()
             {
             case TileType::Grass1:
                 m_renderer
-                    .draw_image(m_images[0], 0, 0, j * 16, i * 16, false, false, 16, 16, 16, 16);
+                    .draw_image(m_images[0], 0, 0, j * 32, i * 32, false, false, 16, 16, 32, 32);
                 break;
             case TileType::Grass2:
                 break;
