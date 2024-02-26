@@ -12,6 +12,8 @@
 #include <cstdint>
 #include <optional>
 #include <random>
+#include <unordered_map>
+#include <unordered_set>
 #include <vector>
 
 class Renderer;
@@ -36,8 +38,8 @@ public:
 
     ~Game();
 
-    Game(const Game &other)            = delete;
-    Game(Game &&other)                 = delete;
+          Game(const Game &other)      = delete;
+          Game(Game &&other)           = delete;
     Game &operator=(const Game &other) = delete;
     Game &operator=(Game &&other)      = delete;
 
@@ -84,4 +86,6 @@ private:
     std::vector<std::pair<std::int32_t, IInputHandler *>>         m_input_handlers;
     std::vector<std::pair<std::int32_t, IDestroyable *>>          m_destroyables;
     std::vector<std::pair<std::int32_t, IAttacker *>>             m_attackers;
+
+    std::unordered_map<std::int32_t, std::unordered_set<std::int32_t>> m_attack_landed;
 };

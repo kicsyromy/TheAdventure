@@ -126,35 +126,89 @@ void Game::render(Renderer &renderer, const RenderEvent &event)
                 const auto i_id = m_collidables[i].first;
                 const auto j_id = m_collidables[j].first;
 
-                auto attacker_i_it =
+                const auto attacker_i_it =
                     std::find_if(m_attackers.begin(), m_attackers.end(), [i_id](auto &attacker) {
                         return attacker.first == i_id;
                     });
-                if (attacker_i_it != m_attackers.end() && attacker_i_it->second->is_attacking())
+                if (attacker_i_it != m_attackers.end())
                 {
-                    auto dest_it = std::find_if(m_destroyables.begin(),
-                                                m_destroyables.end(),
-                                                [j_id](auto &dest) { return dest.first == j_id; });
-                    if (dest_it != m_destroyables.end())
+                    if (attacker_i_it->second->is_attacking())
                     {
-                        dest_it->second->take_damage(attacker_i_it->second->attack_power() *
-                                                     event.seconds_elapsed);
+                        const auto dest_it =
+                            std::find_if(m_destroyables.begin(),
+                                         m_destroyables.end(),
+                                         [j_id](auto &dest) { return dest.first == j_id; });
+                        if (dest_it != m_destroyables.end())
+                        {
+                            const auto deal_damage = [&](auto &attack_landed) {
+                                attack_landed->second.insert(dest_it->first);
+                                dest_it->second->take_damage(attacker_i_it->second->attack_power());
+                            };
+
+                            auto attack_landed = m_attack_landed.find(attacker_i_it->first);
+                            if (attack_landed != m_attack_landed.end())
+                            {
+                                const auto target_hit = attack_landed->second.find(dest_it->first);
+                                if (target_hit == attack_landed->second.end())
+                                {
+                                    deal_damage(attack_landed);
+                                }
+                            }
+                            else
+                            {
+                                auto [attack_landed, _] = m_attack_landed.emplace(
+                                    attacker_i_it->first,
+                                    std::unordered_set<std::int32_t>{ dest_it->first });
+                                deal_damage(attack_landed);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        m_attack_landed.erase(attacker_i_it->first);
                     }
                 }
 
-                auto attacker_j_jt =
+                const auto attacker_j_it =
                     std::find_if(m_attackers.begin(), m_attackers.end(), [j_id](auto &attacker) {
                         return attacker.first == j_id;
                     });
-                if (attacker_j_jt != m_attackers.end() && attacker_j_jt->second->is_attacking())
+                if (attacker_j_it != m_attackers.end())
                 {
-                    auto dest_it = std::find_if(m_destroyables.begin(),
-                                                m_destroyables.end(),
-                                                [i_id](auto &dest) { return dest.first == i_id; });
-                    if (dest_it != m_destroyables.end())
+                    if (attacker_j_it->second->is_attacking())
                     {
-                        dest_it->second->take_damage(attacker_j_jt->second->attack_power() *
-                                                     event.seconds_elapsed);
+                        const auto dest_it =
+                            std::find_if(m_destroyables.begin(),
+                                         m_destroyables.end(),
+                                         [i_id](auto &dest) { return dest.first == i_id; });
+                        if (dest_it != m_destroyables.end())
+                        {
+                            const auto deal_damage = [&](auto &attack_landed) {
+                                attack_landed->second.insert(dest_it->first);
+                                dest_it->second->take_damage(attacker_j_it->second->attack_power());
+                            };
+
+                            auto attack_landed = m_attack_landed.find(attacker_j_it->first);
+                            if (attack_landed != m_attack_landed.end())
+                            {
+                                const auto target_hit = attack_landed->second.find(dest_it->first);
+                                if (target_hit == attack_landed->second.end())
+                                {
+                                    deal_damage(attack_landed);
+                                }
+                            }
+                            else
+                            {
+                                auto [attack_landed, _] = m_attack_landed.emplace(
+                                    attacker_j_it->first,
+                                    std::unordered_set<std::int32_t>{ dest_it->first });
+                                deal_damage(attack_landed);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        m_attack_landed.erase(attacker_j_it->first);
                     }
                 }
 

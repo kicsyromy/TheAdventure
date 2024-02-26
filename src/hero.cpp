@@ -100,7 +100,7 @@ bool Hero::is_attacking() const
 
 float Hero::attack_power() const
 {
-    return 10.F;
+    return 1.F;
 }
 
 void Hero::update(Game &game, float attenuation)
