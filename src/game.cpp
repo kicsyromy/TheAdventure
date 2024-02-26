@@ -12,7 +12,7 @@ Game::~Game() = default;
 
 void Game::load_assets(Renderer &renderer)
 {
-    m_map.emplace(renderer, 50, 50);
+    m_map.emplace(renderer);
 
     m_bg_music_id = m_sound.load_music(resource_world_bg, resource_world_bg_size);
     m_sound.play_music(m_bg_music_id);

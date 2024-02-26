@@ -8,14 +8,15 @@ class Map
 public:
     enum class TileType
     {
-        Grass1 = 0,
+        None   = 0,
+        Grass1 = 1,
         Grass2,
         Grass3,
         Grass4,
     };
 
 public:
-    explicit Map(Renderer &renderer, std::size_t width, std::size_t height);
+    explicit Map(Renderer &renderer);
 
     TileType pos(std::size_t i, std::size_t j) const;
     void     render();
