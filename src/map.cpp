@@ -80,11 +80,6 @@ Map::Map(Renderer &renderer)
 
         token = std::strtok(nullptr, ",");
     }
-
-    //    std::cout << "width: " << m_width << " height: " << m_height << '\n'
-    //              << "tile data: " << tile_data << '\n';
-
-    //    m_tiles.resize(m_width * m_height, TileType::None);
 }
 
 Map::TileType Map::pos(std::size_t i, std::size_t j) const
