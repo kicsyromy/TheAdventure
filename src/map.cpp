@@ -73,6 +73,18 @@ Map::Map(Renderer &renderer)
         {
             m_tiles.push_back(TileType::Grass1);
         }
+        else if (tok == "2")
+        {
+            m_tiles.push_back(TileType::Grass2);
+        }
+        else if (tok == "3")
+        {
+            m_tiles.push_back(TileType::Grass3);
+        }
+        else if (tok == "4")
+        {
+            m_tiles.push_back(TileType::Grass4);
+        }
         else
         {
             m_tiles.push_back(TileType::None);
@@ -93,28 +105,18 @@ void Map::render()
     {
         for (std::size_t j = 0; j < m_width; ++j)
         {
-            switch (pos(i, j))
-            {
-            case TileType::Grass1:
-                m_renderer.draw_image(m_images[0],
-                                      0,
-                                      0,
-                                      j * TILE_DST_SIZE,
-                                      i * TILE_DST_SIZE,
-                                      false,
-                                      false,
-                                      TILE_SRC_SIZE,
-                                      TILE_SRC_SIZE,
-                                      TILE_DST_SIZE,
-                                      TILE_DST_SIZE);
-                break;
-            case TileType::Grass2:
-                break;
-            case TileType::Grass3:
-                break;
-            case TileType::Grass4:
-                break;
-            }
+            const auto tile_type = pos(i, j);
+            m_renderer.draw_image(m_images[static_cast<std::size_t>(tile_type) - 1],
+                                  0,
+                                  0,
+                                  j * TILE_DST_SIZE,
+                                  i * TILE_DST_SIZE,
+                                  false,
+                                  false,
+                                  TILE_SRC_SIZE,
+                                  TILE_SRC_SIZE,
+                                  TILE_DST_SIZE,
+                                  TILE_DST_SIZE);
         }
     }
 }
