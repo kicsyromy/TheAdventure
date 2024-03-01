@@ -2,6 +2,7 @@
 
 #include "resources.h"
 
+#include <cstring>
 #include <exception>
 #include <fstream>
 #include <iostream>
@@ -64,10 +65,26 @@ Map::Map(Renderer &renderer)
         }
     } while (!map_file.eof());
 
-    std::cout << "width: " << m_width << " height: " << m_height << '\n'
-              << "tile data: " << tile_data << '\n';
+    auto *token = std::strtok(tile_data.data(), ",");
+    while (token != nullptr)
+    {
+        const auto tok = std::string_view{ token };
+        if (tok == "1")
+        {
+            m_tiles.push_back(TileType::Grass1);
+        }
+        else
+        {
+            m_tiles.push_back(TileType::None);
+        }
 
-    m_tiles.resize(m_width * m_height, TileType::None);
+        token = std::strtok(nullptr, ",");
+    }
+
+    //    std::cout << "width: " << m_width << " height: " << m_height << '\n'
+    //              << "tile data: " << tile_data << '\n';
+
+    //    m_tiles.resize(m_width * m_height, TileType::None);
 }
 
 Map::TileType Map::pos(std::size_t i, std::size_t j) const
