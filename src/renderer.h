@@ -46,6 +46,8 @@ public:
     int32_t width() const;
     int32_t height() const;
 
+    void update_backbuffer_size();
+
     void         set_color(const Color &color);
     void         clear();
     void         put_pixel(std::int32_t x, std::int32_t y);
@@ -74,5 +76,5 @@ private:
     SDL_Renderer      *m_renderer{ nullptr };
     std::vector<Image> images;
 
-    float m_scale_factor{ 2.F };
+    SDL_Texture *m_backbuffer{ nullptr };
 };

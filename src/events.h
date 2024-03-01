@@ -5,6 +5,8 @@
 #include <cstdint>
 #include <cstring>
 
+class Renderer;
+
 struct KeyPressEvent final
 {
     KeyCode key_code;
@@ -52,6 +54,7 @@ struct WindowResizeEvent final
 {
     std::int32_t width;
     std::int32_t height;
+    Renderer    &renderer;
 };
 
 struct RenderEvent final

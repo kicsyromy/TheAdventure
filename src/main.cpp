@@ -40,8 +40,8 @@ int main()
     auto *window   = SDL_CreateWindow(PROJECT_NAME,
                                     SDL_WINDOWPOS_UNDEFINED,
                                     SDL_WINDOWPOS_UNDEFINED,
-                                    640,
-                                    368,
+                                    1280,
+                                    720,
                                     SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI);
     auto  renderer = Renderer{ window };
     game.load_assets(renderer);
@@ -82,7 +82,7 @@ int main()
                 }
                 case SDL_WindowEventID::SDL_WINDOWEVENT_SIZE_CHANGED: {
                     game.on_window_resized(
-                        WindowResizeEvent{ event.window.data1, event.window.data2 });
+                        WindowResizeEvent{ event.window.data1, event.window.data2, renderer });
                     break;
                 }
                 case SDL_WindowEventID::SDL_WINDOWEVENT_MINIMIZED:

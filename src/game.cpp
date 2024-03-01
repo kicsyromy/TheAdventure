@@ -171,7 +171,7 @@ void Game::render(Renderer &renderer, const RenderEvent &event)
     // {
     //     collidable->render_collision_box(renderer, true);
     // }
-    //
+
     // for (const auto &collidable : not_colliding)
     // {
     //     collidable->render_collision_box(renderer, false);
@@ -199,7 +199,9 @@ void Game::on_window_moved(const WindowMoveEvent &event)
 {}
 
 void Game::on_window_resized(const WindowResizeEvent &event)
-{}
+{
+    event.renderer.update_backbuffer_size();
+}
 
 void Game::on_window_focus_gained()
 {}

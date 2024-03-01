@@ -58,10 +58,21 @@ Renderer::Renderer(SDL_Window *window)
   : m_renderer{ SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED) }
 {
     SDL_SetRenderDrawBlendMode(m_renderer, SDL_BLENDMODE_BLEND);
+
+    std::int32_t width;
+    std::int32_t height;
+    SDL_GetRendererOutputSize(m_renderer, &width, &height);
+    m_backbuffer = SDL_CreateTexture(m_renderer,
+                                     SDL_PIXELFORMAT_RGBA8888,
+                                     SDL_TEXTUREACCESS_TARGET,
+                                     width,
+                                     height);
+    SDL_SetRenderTarget(m_renderer, m_backbuffer);
 }
 
 Renderer::~Renderer()
 {
+    SDL_DestroyTexture(m_backbuffer);
     SDL_DestroyRenderer(m_renderer);
 }
 
@@ -182,5 +193,31 @@ std::int32_t Renderer::load_image(const std::uint8_t *data,
 
 void Renderer::present()
 {
+    SDL_SetRenderTarget(m_renderer, nullptr);
+
+    std::int32_t width;
+    std::int32_t height;
+    SDL_GetRendererOutputSize(m_renderer, &width, &height);
+
+    const auto srcRect  = SDL_Rect{ 0, 0, 640, 368 };
+    const auto destRect = SDL_Rect{ 0, 0, width, height };
+    SDL_RenderCopy(m_renderer, m_backbuffer, &srcRect, &destRect);
+
     SDL_RenderPresent(m_renderer);
+
+    SDL_SetRenderTarget(m_renderer, m_backbuffer);
+}
+
+void Renderer::update_backbuffer_size()
+{
+    std::int32_t width;
+    std::int32_t height;
+    SDL_GetRendererOutputSize(m_renderer, &width, &height);
+    SDL_DestroyTexture(m_backbuffer);
+    m_backbuffer = SDL_CreateTexture(m_renderer,
+                                     SDL_PIXELFORMAT_RGBA8888,
+                                     SDL_TEXTUREACCESS_TARGET,
+                                     width,
+                                     height);
+    SDL_SetRenderTarget(m_renderer, m_backbuffer);
 }
