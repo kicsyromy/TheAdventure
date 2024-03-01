@@ -40,8 +40,8 @@ int main()
     auto *window   = SDL_CreateWindow(PROJECT_NAME,
                                     SDL_WINDOWPOS_UNDEFINED,
                                     SDL_WINDOWPOS_UNDEFINED,
-                                    800,
-                                    800,
+                                    640,
+                                    368,
                                     SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI);
     auto  renderer = Renderer{ window };
     game.load_assets(renderer);

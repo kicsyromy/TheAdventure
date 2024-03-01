@@ -46,8 +46,6 @@ public:
 private:
     float c_x() const override;
     float c_y() const override;
-    float c_scale_x() const override;
-    float c_scale_y() const override;
 
 private:
     AnimatedSprite m_sprite;

@@ -29,9 +29,6 @@ Slime::Slime(Renderer &renderer, Sound &sound)
   , m_distribution{ 0, 10 }
   , m_sound{ sound }
 {
-    scale_x() *= 2.F;
-    scale_y() *= 2.F;
-
     x() = 100.F;
     y() = 100.F;
 
@@ -114,7 +111,7 @@ void Slime::update(Game &game, float attenuation)
         switch (m_direction)
         {
         case Direction::Up: {
-            y() -= 120.F * attenuation;
+            y() -= 80.F * attenuation;
             m_sprite.set_sprite_set(SpriteSet::JumpingRight, m_orientation == Orientation::Left);
             m_sprite.set_total_frames(MAX_FRAMES, MAX_FRAMES - JUMP_FRAMES);
 
@@ -122,7 +119,7 @@ void Slime::update(Game &game, float attenuation)
             break;
         }
         case Direction::Down: {
-            y() += 120.F * attenuation;
+            y() += 80.F * attenuation;
             m_sprite.set_sprite_set(SpriteSet::JumpingRight, m_orientation == Orientation::Left);
             m_sprite.set_total_frames(MAX_FRAMES, MAX_FRAMES - JUMP_FRAMES);
 
@@ -130,7 +127,7 @@ void Slime::update(Game &game, float attenuation)
             break;
         }
         case Direction::Left: {
-            x() -= 120.F * attenuation;
+            x() -= 80.F * attenuation;
             m_sprite.set_sprite_set(SpriteSet::JumpingRight, true);
             m_sprite.set_total_frames(MAX_FRAMES, MAX_FRAMES - JUMP_FRAMES);
             m_orientation = Orientation::Left;
@@ -139,7 +136,7 @@ void Slime::update(Game &game, float attenuation)
             break;
         }
         case Direction::Right: {
-            x() += 120.F * attenuation;
+            x() += 80.F * attenuation;
             m_sprite.set_sprite_set(SpriteSet::JumpingRight);
             m_sprite.set_total_frames(MAX_FRAMES, MAX_FRAMES - JUMP_FRAMES);
             m_orientation = Orientation::Right;
@@ -177,9 +174,6 @@ void Slime::render(Renderer &renderer)
     m_sprite.x() = x();
     m_sprite.y() = y();
 
-    m_sprite.scale_x() = scale_x();
-    m_sprite.scale_y() = scale_y();
-
     m_sprite.render(renderer);
 }
 
@@ -207,12 +201,4 @@ float Slime::c_x() const
 float Slime::c_y() const
 {
     return IThing::y();
-}
-float Slime::c_scale_x() const
-{
-    return IThing::scale_x();
-}
-float Slime::c_scale_y() const
-{
-    return IThing::scale_y();
 }

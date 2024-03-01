@@ -26,9 +26,6 @@ Hero::Hero(Renderer &renderer, Sound &sound)
   : m_sprite{ resource_player, resource_player_size, renderer }
   , m_sound{ sound }
 {
-    scale_x() *= 2.F;
-    scale_y() *= 2.F;
-
     width()  = m_sprite.width() / MAX_FRAMES;
     height() = m_sprite.height() / MAX_FRAMES;
 
@@ -115,7 +112,7 @@ void Hero::update(Game &game, float attenuation)
 
     if (game.is_key_pressed(KeyCode::Up))
     {
-        y() -= 120.F * attenuation;
+        y() -= 80.F * attenuation;
         m_sprite.set_sprite_set(SpriteSet::RunningUp);
         m_orientation = Orientation::Up;
 
@@ -124,7 +121,7 @@ void Hero::update(Game &game, float attenuation)
 
     if (game.is_key_pressed(KeyCode::Down))
     {
-        y() += 120.F * attenuation;
+        y() += 80.F * attenuation;
         m_sprite.set_sprite_set(SpriteSet::RunningDown);
         m_orientation = Orientation::Down;
 
@@ -133,7 +130,7 @@ void Hero::update(Game &game, float attenuation)
 
     if (game.is_key_pressed(KeyCode::Left))
     {
-        x() -= 120.F * attenuation;
+        x() -= 80.F * attenuation;
         m_sprite.set_sprite_set(SpriteSet::RunningRight, true);
         m_orientation = Orientation::Left;
 
@@ -142,7 +139,7 @@ void Hero::update(Game &game, float attenuation)
 
     if (game.is_key_pressed(KeyCode::Right))
     {
-        x() += 120.F * attenuation;
+        x() += 80.F * attenuation;
         m_sprite.set_sprite_set(SpriteSet::RunningRight);
         m_orientation = Orientation::Right;
 
@@ -181,9 +178,6 @@ void Hero::render(Renderer &renderer)
     m_sprite.x() = x();
     m_sprite.y() = y();
 
-    m_sprite.scale_x() = scale_x();
-    m_sprite.scale_y() = scale_y();
-
     m_sprite.render(renderer);
 }
 
@@ -205,12 +199,4 @@ float Hero::c_x() const
 float Hero::c_y() const
 {
     return IThing::y();
-}
-float Hero::c_scale_x() const
-{
-    return IThing::scale_x();
-}
-float Hero::c_scale_y() const
-{
-    return IThing::scale_y();
 }

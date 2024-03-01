@@ -47,9 +47,6 @@ public:
     float width() const;
     float height() const;
 
-    float &scale_x();
-    float &scale_y();
-
 protected:
     std::int32_t m_width;
     std::int32_t m_height;

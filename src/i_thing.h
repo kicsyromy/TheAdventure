@@ -28,12 +28,6 @@ public:
     float       &height();
     const float &height() const;
 
-    float       &scale_x();
-    const float &scale_x() const;
-
-    float       &scale_y();
-    const float &scale_y() const;
-
 private:
     std::int32_t m_id{ 0 };
 
@@ -42,7 +36,4 @@ private:
 
     float m_width{ 0.F };
     float m_height{ 0.F };
-
-    float m_scale_x{ 1.F };
-    float m_scale_y{ 1.F };
 };

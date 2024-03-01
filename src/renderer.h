@@ -73,4 +73,6 @@ public:
 private:
     SDL_Renderer      *m_renderer{ nullptr };
     std::vector<Image> images;
+
+    float m_scale_factor{ 2.F };
 };

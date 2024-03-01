@@ -19,8 +19,8 @@ void Sprite::render(Renderer &renderer)
                         false,
                         m_width,
                         m_height,
-                        static_cast<std::int32_t>(std::round(m_width * m_scale_x)),
-                        static_cast<std::int32_t>(std::round(m_height * m_scale_y)));
+                        m_width,
+                        m_height);
 }
 
 float &Sprite::x()
@@ -41,14 +41,4 @@ float Sprite::width() const
 float Sprite::height() const
 {
     return static_cast<float>(m_height);
-}
-
-float &Sprite::scale_x()
-{
-    return m_scale_x;
-}
-
-float &Sprite::scale_y()
-{
-    return m_scale_y;
 }

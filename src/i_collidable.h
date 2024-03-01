@@ -23,10 +23,8 @@ public:
     virtual bool is_colliding(const ICollidable &other);
 
 protected:
-    virtual float c_x() const       = 0;
-    virtual float c_y() const       = 0;
-    virtual float c_scale_x() const = 0;
-    virtual float c_scale_y() const = 0;
+    virtual float c_x() const = 0;
+    virtual float c_y() const = 0;
 
 private:
     Rect m_collision_box;

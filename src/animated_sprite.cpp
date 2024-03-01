@@ -20,8 +20,8 @@ void AnimatedSprite::render(Renderer &renderer)
                         false,
                         m_frame_size,
                         m_frame_size,
-                        static_cast<std::int32_t>(std::round(m_frame_size * scale_x())),
-                        static_cast<std::int32_t>(std::round(m_frame_size * scale_y())));
+                        m_frame_size,
+                        m_frame_size);
 }
 
 void AnimatedSprite::set_sprite_set(std::int32_t sprite_set, bool flip)

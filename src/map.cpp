@@ -10,7 +10,7 @@
 #include <string_view>
 
 static constexpr std::int32_t TILE_SRC_SIZE = 16;
-static constexpr std::int32_t TILE_DST_SIZE = 16 * 2;
+static constexpr std::int32_t TILE_DST_SIZE = 16;
 
 Map::Map(Renderer &renderer)
   : m_renderer{ renderer }
@@ -27,7 +27,7 @@ Map::Map(Renderer &renderer)
         std::terminate();
     }
 
-    std::string line{ "hello world" };
+    std::string line;
     std::string tile_data;
     do
     {
