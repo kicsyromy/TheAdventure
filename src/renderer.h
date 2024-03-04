@@ -46,8 +46,6 @@ public:
     int32_t width() const;
     int32_t height() const;
 
-    void update_backbuffer_size();
-
     void         set_color(const Color &color);
     void         clear();
     void         put_pixel(std::int32_t x, std::int32_t y);

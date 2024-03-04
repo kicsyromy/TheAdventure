@@ -199,9 +199,7 @@ void Game::on_window_moved(const WindowMoveEvent &event)
 {}
 
 void Game::on_window_resized(const WindowResizeEvent &event)
-{
-    event.renderer.update_backbuffer_size();
-}
+{}
 
 void Game::on_window_focus_gained()
 {}

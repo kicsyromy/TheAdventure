@@ -3,6 +3,11 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
+#include <iostream>
+
+static constexpr int SRC_WIDTH  = 640; // px
+static constexpr int SRC_HEIGHT = 368; // px
+
 Renderer::Image::Image(SDL_Renderer *renderer, const std::uint8_t *data, std::size_t size)
 {
     std::int32_t channels;
@@ -59,14 +64,11 @@ Renderer::Renderer(SDL_Window *window)
 {
     SDL_SetRenderDrawBlendMode(m_renderer, SDL_BLENDMODE_BLEND);
 
-    std::int32_t width;
-    std::int32_t height;
-    SDL_GetRendererOutputSize(m_renderer, &width, &height);
     m_backbuffer = SDL_CreateTexture(m_renderer,
                                      SDL_PIXELFORMAT_RGBA8888,
                                      SDL_TEXTUREACCESS_TARGET,
-                                     width,
-                                     height);
+                                     SRC_WIDTH,
+                                     SRC_HEIGHT);
     SDL_SetRenderTarget(m_renderer, m_backbuffer);
 }
 
@@ -193,31 +195,39 @@ std::int32_t Renderer::load_image(const std::uint8_t *data,
 
 void Renderer::present()
 {
+    static constexpr auto SRC_RECT = SDL_Rect{ 0, 0, SRC_WIDTH, SRC_HEIGHT };
+
     SDL_SetRenderTarget(m_renderer, nullptr);
+
+    set_color({ 0, 0, 0, 255 });
+    clear();
 
     std::int32_t width;
     std::int32_t height;
     SDL_GetRendererOutputSize(m_renderer, &width, &height);
 
-    const auto srcRect  = SDL_Rect{ 0, 0, 640, 368 };
-    const auto destRect = SDL_Rect{ 0, 0, width, height };
-    SDL_RenderCopy(m_renderer, m_backbuffer, &srcRect, &destRect);
+    const auto ratio_w = static_cast<float>(width) / SRC_WIDTH;
+    const auto ratio_h = static_cast<float>(height) / SRC_HEIGHT;
+
+    const float min_ratio = std::min(ratio_w, ratio_h);
+
+    const auto dest_width  = static_cast<int>(SRC_WIDTH * min_ratio);
+    const auto dest_height = static_cast<int>(SRC_HEIGHT * min_ratio);
+
+    const auto bb_center_x = dest_width / 2.F;
+    const auto bb_center_y = dest_height / 2.F;
+
+    const auto center_x = width / 2;
+    const auto center_y = height / 2;
+
+    const auto offset_x = static_cast<int>(center_x - bb_center_x);
+    const auto offset_y = static_cast<int>(center_y - bb_center_y);
+
+    const auto destRect =
+        SDL_Rect{ offset_x, offset_y, static_cast<int>(dest_width), static_cast<int>(dest_height) };
+    SDL_RenderCopy(m_renderer, m_backbuffer, &SRC_RECT, &destRect);
 
     SDL_RenderPresent(m_renderer);
 
-    SDL_SetRenderTarget(m_renderer, m_backbuffer);
-}
-
-void Renderer::update_backbuffer_size()
-{
-    std::int32_t width;
-    std::int32_t height;
-    SDL_GetRendererOutputSize(m_renderer, &width, &height);
-    SDL_DestroyTexture(m_backbuffer);
-    m_backbuffer = SDL_CreateTexture(m_renderer,
-                                     SDL_PIXELFORMAT_RGBA8888,
-                                     SDL_TEXTUREACCESS_TARGET,
-                                     width,
-                                     height);
     SDL_SetRenderTarget(m_renderer, m_backbuffer);
 }
