@@ -126,37 +126,8 @@ void Game::render(Renderer &renderer, const RenderEvent &event)
                 const auto i_id = m_collidables[i].first;
                 const auto j_id = m_collidables[j].first;
 
-                auto attacker_i_it =
-                    std::find_if(m_attackers.begin(), m_attackers.end(), [i_id](auto &attacker) {
-                        return attacker.first == i_id;
-                    });
-                if (attacker_i_it != m_attackers.end() && attacker_i_it->second->is_attacking())
-                {
-                    auto dest_it = std::find_if(m_destroyables.begin(),
-                                                m_destroyables.end(),
-                                                [j_id](auto &dest) { return dest.first == j_id; });
-                    if (dest_it != m_destroyables.end())
-                    {
-                        dest_it->second->take_damage(attacker_i_it->second->attack_power() *
-                                                     event.seconds_elapsed);
-                    }
-                }
-
-                auto attacker_j_jt =
-                    std::find_if(m_attackers.begin(), m_attackers.end(), [j_id](auto &attacker) {
-                        return attacker.first == j_id;
-                    });
-                if (attacker_j_jt != m_attackers.end() && attacker_j_jt->second->is_attacking())
-                {
-                    auto dest_it = std::find_if(m_destroyables.begin(),
-                                                m_destroyables.end(),
-                                                [i_id](auto &dest) { return dest.first == i_id; });
-                    if (dest_it != m_destroyables.end())
-                    {
-                        dest_it->second->take_damage(attacker_j_jt->second->attack_power() *
-                                                     event.seconds_elapsed);
-                    }
-                }
+                try_attack(i_id, j_id);
+                try_attack(j_id, i_id);
 
                 colliding.insert(m_collidables[i].second);
                 colliding.insert(m_collidables[j].second);
@@ -186,6 +157,63 @@ void Game::render(Renderer &renderer, const RenderEvent &event)
         fmt::print("FPS: {}\n", frame_counter);
         fps_timer     = fps_timer - 1.0F;
         frame_counter = 0;
+    }
+}
+void Game::try_attack(int32_t thing_id_1, int32_t thing_id_2)
+{
+    // Find out if thing_1 is an attacker
+    const auto attacker_it =
+        std::find_if(m_attackers.begin(), m_attackers.end(), [thing_id_1](auto &attacker) {
+            return attacker.first == thing_id_1;
+        });
+    if (attacker_it != m_attackers.end()) // thing_1 is an attacker
+    {
+        if (attacker_it->second->is_attacking()) // thing_1 is attacking
+        {
+            // We are in an attack phase
+
+            // Find out if our target is a destroyable
+            auto dest_it =
+                std::find_if(m_destroyables.begin(),
+                             m_destroyables.end(),
+                             [thing_id_2](auto &dest) { return dest.first == thing_id_2; });
+            if (dest_it != m_destroyables.end()) // Our target is a destroyable
+            {
+                // Find out if the attacker has already landed an attack on some target
+                auto attack_landed = m_landed_attacks.find(attacker_it->first);
+                if (attack_landed != m_landed_attacks.end()) // The attacker has already
+                                                             // landed an attack on some
+                                                             // target
+                {
+                    // Find out if the attacker has already landed an attack on our
+                    // target
+                    const auto target_hit = attack_landed->second.find(dest_it->first);
+                    if (target_hit == attack_landed->second.end()) // The attacker has not landed an
+                                                                   // attack on our target
+                    {
+                        // Mark the target as hit in this attack phase
+                        attack_landed->second.insert(dest_it->first);
+                        // Deal damage to the target
+                        dest_it->second->take_damage(attacker_it->second->attack_power());
+                    }
+                }
+                else // The attacker has just started their attack phase
+                {
+                    // Mark the attacker as having landed an attack on our target
+                    // Add the attacker to the landed attacks and mark the target as hit
+                    m_landed_attacks.emplace(attacker_it->first,
+                                             std::unordered_set<int32_t>{ dest_it->first });
+                    // Deal damage to the target
+                    dest_it->second->take_damage(attacker_it->second->attack_power());
+                }
+            }
+        }
+        else // thing_1 is not attacking
+        {
+            // thing_1's attack period has ended
+            // Remove the attacker from the landed attacks
+            m_landed_attacks.erase(attacker_it->first);
+        }
     }
 }
 

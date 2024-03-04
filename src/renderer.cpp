@@ -3,8 +3,6 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
-#include <iostream>
-
 static constexpr int SRC_WIDTH  = 640; // px
 static constexpr int SRC_HEIGHT = 368; // px
 
