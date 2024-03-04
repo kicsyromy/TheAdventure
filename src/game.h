@@ -67,6 +67,9 @@ public:
     bool is_key_pressed(KeyCode key_code) const;
 
 private:
+    void try_attack(int32_t thing_id_1, int32_t thing_id_2);
+
+private:
     const std::uint8_t *const m_mouse_button_states;
     const std::uint8_t *const m_keyboard_state;
 
@@ -88,5 +91,4 @@ private:
     std::vector<std::pair<std::int32_t, IAttacker *>>             m_attackers;
 
     std::unordered_map<std::int32_t, std::unordered_set<std::int32_t>> m_landed_attacks;
-    void try_attack(const int32_t thing_id_1, const int32_t thing_id_2);
 };
