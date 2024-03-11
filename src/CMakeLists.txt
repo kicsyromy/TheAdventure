@@ -13,9 +13,7 @@ add_executable(
     i_collidable.cpp
     i_destroyable.h
     i_input_handler.h
-    i_input_handler.cpp
     i_renderable.h
-    i_renderable.cpp
     i_thing.h
     i_thing.cpp
     main.cpp

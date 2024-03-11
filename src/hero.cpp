@@ -4,6 +4,7 @@
 
 #include <resources.h>
 
+#include <algorithm>
 #include <iostream>
 
 enum SpriteSet
@@ -189,8 +190,10 @@ void Hero::update(Game &game, float attenuation)
 
 void Hero::render(Renderer &renderer)
 {
-    m_sprite.x() = x();
-    m_sprite.y() = y();
+    static constexpr int SCROLL_THRESHOLD = 3 * 16;
+
+    m_sprite.x() = std::clamp(x(), 0.F, static_cast<float>(renderer.width() - SCROLL_THRESHOLD));
+    m_sprite.y() = std::clamp(y(), 0.F, static_cast<float>(renderer.height() - SCROLL_THRESHOLD));
 
     m_sprite.render(renderer);
 }
