@@ -43,6 +43,11 @@ Hero::Hero(Renderer &renderer, Sound &sound)
 
 void Hero::attack()
 {
+    if (m_is_attacking && m_sprite.current_frame() <= ATTACK_FRAMES - 2)
+    {
+        return;
+    }
+
     m_is_attacking = true;
 
     switch (m_orientation)
