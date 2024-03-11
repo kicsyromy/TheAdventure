@@ -109,10 +109,17 @@ float Hero::attack_power() const
 
 void Hero::update(Game &game, float attenuation)
 {
-    if (m_is_attacking && m_sprite.current_frame() == ATTACK_FRAMES - 1)
+    if (m_is_attacking)
     {
-        m_is_attacking = false;
-        set_collision_box(DEFAULT_COLLISION_BOX);
+        if (m_sprite.current_frame() == ATTACK_FRAMES - 1)
+        {
+            m_is_attacking = false;
+            set_collision_box(DEFAULT_COLLISION_BOX);
+        }
+        else
+        {
+            return;
+        }
     }
 
     m_is_moving = false;
