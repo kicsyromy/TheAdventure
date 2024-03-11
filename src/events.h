@@ -10,6 +10,7 @@ class Renderer;
 struct KeyPressEvent final
 {
     KeyCode key_code;
+    bool    repeat;
 };
 
 struct KeyReleaseEvent final

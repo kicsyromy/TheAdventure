@@ -46,9 +46,10 @@ private:
 private:
     AnimatedSprite m_sprite;
     Orientation    m_orientation{ Orientation::Down };
-    bool           m_is_attacking{ false };
-    bool           m_is_moving{ false };
-    std::int32_t   m_attack_sound_id{ -1 };
+
+    bool         m_is_attacking{ false };
+    bool         m_is_moving{ false };
+    std::int32_t m_attack_sound_id{ -1 };
 
     Sound &m_sound;
 };

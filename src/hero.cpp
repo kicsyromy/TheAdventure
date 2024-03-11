@@ -4,6 +4,8 @@
 
 #include <resources.h>
 
+#include <iostream>
+
 enum SpriteSet
 {
     IdleDown,
@@ -183,7 +185,7 @@ void Hero::render(Renderer &renderer)
 
 void Hero::on_key_pressed(const KeyPressEvent &event)
 {
-    if (event.key_code == KeyCode::Space)
+    if (event.key_code == KeyCode::Space && !event.repeat)
     {
         attack();
     }
@@ -196,6 +198,7 @@ float Hero::c_x() const
 {
     return IThing::x();
 }
+
 float Hero::c_y() const
 {
     return IThing::y();

@@ -174,8 +174,8 @@ int main()
             }
 
             case SDL_EventType::SDL_KEYDOWN: {
-                game.on_key_pressed(
-                    KeyPressEvent{ static_cast<KeyCode>(event.key.keysym.scancode) });
+                game.on_key_pressed(KeyPressEvent{ static_cast<KeyCode>(event.key.keysym.scancode),
+                                                   event.key.repeat != 0 });
                 break;
             }
             }
