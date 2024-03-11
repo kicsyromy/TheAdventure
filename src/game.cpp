@@ -34,14 +34,14 @@ void Game::load_assets(Renderer &renderer)
     m_collidables.emplace_back(hero->id(), hero);
     m_input_handlers.emplace_back(hero->id(), hero);
     m_attackers.emplace_back(hero->id(), hero);
+
+    m_hero = hero;
 }
 
 void Game::render(Renderer &renderer, const RenderEvent &event)
 {
     renderer.set_color({ 0, 0, 0, 255 });
     renderer.clear();
-
-    m_map->render();
 
     std::vector<std::size_t> destroyed_indices;
     for (std::size_t i = 0; i < m_destroyables.size(); ++i)
@@ -103,6 +103,9 @@ void Game::render(Renderer &renderer, const RenderEvent &event)
     {
         thing->update(*this, event.seconds_elapsed);
     }
+
+    m_map->update(m_hero->x(), m_hero->y());
+    m_map->render();
 
     for (const auto &[id, renderable] : m_renderables)
     {

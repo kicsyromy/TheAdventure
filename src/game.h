@@ -90,5 +90,7 @@ private:
     std::vector<std::pair<std::int32_t, IDestroyable *>>          m_destroyables;
     std::vector<std::pair<std::int32_t, IAttacker *>>             m_attackers;
 
+    Hero *m_hero{ nullptr };
+
     std::unordered_map<std::int32_t, std::unordered_set<std::int32_t>> m_landed_attacks;
 };

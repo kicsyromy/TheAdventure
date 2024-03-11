@@ -19,6 +19,7 @@ public:
     explicit Map(Renderer &renderer);
 
     TileType pos(std::size_t i, std::size_t j) const;
+    void     update(float x_px, float y_px);
     void     render();
 
 private:
@@ -29,4 +30,6 @@ private:
     std::vector<TileType> m_tiles;
 
     std::vector<std::int32_t> m_images;
+
+    SDL_Rect m_viewport;
 };
