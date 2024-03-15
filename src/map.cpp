@@ -103,39 +103,42 @@ Map::TileType Map::pos(std::size_t i, std::size_t j) const
     return m_tiles[i * m_width + j];
 }
 
-void Map::update(float x_px, float y_px)
+std::pair<float, float> Map::update(float hero_x, float hero_y)
 {
-    std::cerr << "X: " << x_px << " Y: " << y_px << '\n';
-    static constexpr int SCROLL_THRESHOLD_TILES = 3;
+    std::cerr << "X: " << hero_x << " Y: " << hero_y << '\n';
+    static constexpr int SCROLL_THRESHOLD = 100;
 
-    const auto tiles_x = static_cast<int>(x_px / TILE_SRC_SIZE);
-    const auto tiles_y = static_cast<int>(y_px / TILE_SRC_SIZE);
+    const auto window_width  = m_renderer.width();
+    const auto window_height = m_renderer.height();
 
-    // Scroll left
-    if ((tiles_x - SCROLL_THRESHOLD_TILES <= m_viewport.x) && m_viewport.x > 0)
-    {
-        m_viewport.x -= 1;
-    }
+    float offset_x = 0.F;
+    float offset_y = 0.F;
 
-    // Scroll up
-    if ((tiles_y - SCROLL_THRESHOLD_TILES <= m_viewport.y) && m_viewport.y > 0)
-    {
-        m_viewport.y -= 1;
-    }
-
-    // Scroll right
-    if ((tiles_x + SCROLL_THRESHOLD_TILES >= m_viewport.w + m_viewport.x) &&
-        (m_viewport.w + m_viewport.x) < m_width)
+    if ((hero_x > window_width - SCROLL_THRESHOLD) && (m_viewport.x + m_viewport.w < m_width))
     {
         m_viewport.x += 1;
+        offset_x = static_cast<float>(-TILE_SRC_SIZE);
     }
 
-    // Scroll down
-    if ((tiles_y + SCROLL_THRESHOLD_TILES >= m_viewport.h + m_viewport.y) &&
-        (m_viewport.h + m_viewport.y) < m_height)
+    if ((hero_x < SCROLL_THRESHOLD) && (m_viewport.x > 0))
+    {
+        m_viewport.x -= 1;
+        offset_x = static_cast<float>(TILE_SRC_SIZE);
+    }
+
+    if ((hero_y > window_height - SCROLL_THRESHOLD) && (m_viewport.y + m_viewport.h < m_height))
     {
         m_viewport.y += 1;
+        offset_y = static_cast<float>(-TILE_SRC_SIZE);
     }
+
+    if ((hero_y < SCROLL_THRESHOLD) && (m_viewport.y > 0))
+    {
+        m_viewport.y -= 1;
+        offset_y = static_cast<float>(TILE_SRC_SIZE);
+    }
+
+    return { offset_x, offset_y };
 }
 
 void Map::render()
@@ -158,4 +161,14 @@ void Map::render()
                                   TILE_DST_SIZE);
         }
     }
+}
+
+float Map::width() const
+{
+    return static_cast<float>(m_width * TILE_SRC_SIZE);
+}
+
+float Map::height() const
+{
+    return static_cast<float>(m_height * TILE_SRC_SIZE);
 }

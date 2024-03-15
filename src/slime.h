@@ -37,8 +37,10 @@ public:
 
     void attack();
 
-    void update(Game &game, float attenuation = 1.F) override;
-    void render(Renderer &renderer) override;
+    void   update(Game &game, float attenuation = 1.F) override;
+    void   render(Renderer &renderer) override;
+    float &render_x() override;
+    float &render_y() override;
 
     void take_damage(float damage) override;
     bool should_be_destroyed() override;

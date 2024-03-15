@@ -112,6 +112,7 @@ void Slime::update(Game &game, float attenuation)
         {
         case Direction::Up: {
             y() -= 80.F * attenuation;
+            m_sprite.y() -= 80.F * attenuation;
             m_sprite.set_sprite_set(SpriteSet::JumpingRight, m_orientation == Orientation::Left);
             m_sprite.set_total_frames(MAX_FRAMES, MAX_FRAMES - JUMP_FRAMES);
 
@@ -120,6 +121,7 @@ void Slime::update(Game &game, float attenuation)
         }
         case Direction::Down: {
             y() += 80.F * attenuation;
+            m_sprite.y() += 80.F * attenuation;
             m_sprite.set_sprite_set(SpriteSet::JumpingRight, m_orientation == Orientation::Left);
             m_sprite.set_total_frames(MAX_FRAMES, MAX_FRAMES - JUMP_FRAMES);
 
@@ -128,6 +130,7 @@ void Slime::update(Game &game, float attenuation)
         }
         case Direction::Left: {
             x() -= 80.F * attenuation;
+            m_sprite.x() -= 80.F * attenuation;
             m_sprite.set_sprite_set(SpriteSet::JumpingRight, true);
             m_sprite.set_total_frames(MAX_FRAMES, MAX_FRAMES - JUMP_FRAMES);
             m_orientation = Orientation::Left;
@@ -137,6 +140,7 @@ void Slime::update(Game &game, float attenuation)
         }
         case Direction::Right: {
             x() += 80.F * attenuation;
+            m_sprite.x() += 80.F * attenuation;
             m_sprite.set_sprite_set(SpriteSet::JumpingRight);
             m_sprite.set_total_frames(MAX_FRAMES, MAX_FRAMES - JUMP_FRAMES);
             m_orientation = Orientation::Right;
@@ -171,10 +175,17 @@ void Slime::update(Game &game, float attenuation)
 
 void Slime::render(Renderer &renderer)
 {
-    m_sprite.x() = x();
-    m_sprite.y() = y();
-
     m_sprite.render(renderer);
+}
+
+float &Slime::render_x()
+{
+    return m_sprite.x();
+}
+
+float &Slime::render_y()
+{
+    return m_sprite.y();
 }
 
 void Slime::take_damage(float damage)

@@ -1,4 +1,5 @@
 #pragma once
+
 #include "renderer.h"
 
 #include <vector>
@@ -18,9 +19,12 @@ public:
 public:
     explicit Map(Renderer &renderer);
 
-    TileType pos(std::size_t i, std::size_t j) const;
-    void     update(float x_px, float y_px);
-    void     render();
+    TileType                pos(std::size_t i, std::size_t j) const;
+    std::pair<float, float> update(float x_px, float y_px);
+    void                    render();
+
+    float width() const;
+    float height() const;
 
 private:
     Renderer &m_renderer;

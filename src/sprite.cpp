@@ -28,7 +28,17 @@ float &Sprite::x()
     return m_pos_x;
 }
 
+float Sprite::x() const
+{
+    return m_pos_x;
+}
+
 float &Sprite::y()
+{
+    return m_pos_y;
+}
+
+float Sprite::y() const
 {
     return m_pos_y;
 }

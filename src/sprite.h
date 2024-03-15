@@ -42,7 +42,9 @@ public:
     virtual void render(Renderer &renderer);
 
     float &x();
+    float  x() const;
     float &y();
+    float  y() const;
 
     float width() const;
     float height() const;

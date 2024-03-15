@@ -28,6 +28,7 @@ static constexpr Rect         DEFAULT_COLLISION_BOX = { 15, 30, 19, 14 };
 Hero::Hero(Renderer &renderer, Sound &sound)
   : m_sprite{ resource_player, resource_player_size, renderer }
   , m_sound{ sound }
+  , m_renderer{ renderer }
 {
     width()  = m_sprite.width() / MAX_FRAMES;
     height() = m_sprite.height() / MAX_FRAMES;
@@ -128,6 +129,7 @@ void Hero::update(Game &game, float attenuation)
     if (game.is_key_pressed(KeyCode::Up))
     {
         y() -= 80.F * attenuation;
+        m_sprite.y() -= 80.F * attenuation;
         m_sprite.set_sprite_set(SpriteSet::RunningUp);
         m_orientation = Orientation::Up;
 
@@ -137,6 +139,7 @@ void Hero::update(Game &game, float attenuation)
     if (game.is_key_pressed(KeyCode::Down))
     {
         y() += 80.F * attenuation;
+        m_sprite.y() += 80.F * attenuation;
         m_sprite.set_sprite_set(SpriteSet::RunningDown);
         m_orientation = Orientation::Down;
 
@@ -146,6 +149,7 @@ void Hero::update(Game &game, float attenuation)
     if (game.is_key_pressed(KeyCode::Left))
     {
         x() -= 80.F * attenuation;
+        m_sprite.x() -= 80.F * attenuation;
         m_sprite.set_sprite_set(SpriteSet::RunningRight, true);
         m_orientation = Orientation::Left;
 
@@ -155,6 +159,7 @@ void Hero::update(Game &game, float attenuation)
     if (game.is_key_pressed(KeyCode::Right))
     {
         x() += 80.F * attenuation;
+        m_sprite.x() += 80.F * attenuation;
         m_sprite.set_sprite_set(SpriteSet::RunningRight);
         m_orientation = Orientation::Right;
 
@@ -190,12 +195,17 @@ void Hero::update(Game &game, float attenuation)
 
 void Hero::render(Renderer &renderer)
 {
-    static constexpr int SCROLL_THRESHOLD = 3 * 16;
-
-    m_sprite.x() = std::clamp(x(), 0.F, static_cast<float>(renderer.width() - SCROLL_THRESHOLD));
-    m_sprite.y() = std::clamp(y(), 0.F, static_cast<float>(renderer.height() - SCROLL_THRESHOLD));
-
     m_sprite.render(renderer);
+}
+
+float &Hero::render_x()
+{
+    return m_sprite.x();
+}
+
+float &Hero::render_y()
+{
+    return m_sprite.y();
 }
 
 void Hero::on_key_pressed(const KeyPressEvent &event)

@@ -34,10 +34,12 @@ public:
     bool  is_attacking() const override;
     float attack_power() const override;
 
-    void update(Game &game, float attenuation = 1.F) override;
-    void render(Renderer &renderer) override;
-    void on_key_pressed(const KeyPressEvent &event) override;
-    void on_key_released(const KeyReleaseEvent &event) override;
+    void   update(Game &game, float attenuation = 1.F) override;
+    void   render(Renderer &renderer) override;
+    float &render_x() override;
+    float &render_y() override;
+    void   on_key_pressed(const KeyPressEvent &event) override;
+    void   on_key_released(const KeyReleaseEvent &event) override;
 
 private:
     float c_x() const override;
@@ -51,5 +53,6 @@ private:
     bool         m_is_moving{ false };
     std::int32_t m_attack_sound_id{ -1 };
 
-    Sound &m_sound;
+    Sound    &m_sound;
+    Renderer &m_renderer;
 };

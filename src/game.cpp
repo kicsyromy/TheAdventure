@@ -21,14 +21,18 @@ void Game::load_assets(Renderer &renderer)
     {
         auto *slime = new Slime{ renderer, m_sound };
         slime->x() += i * 64;
+        slime->render_x() = slime->x();
         slime->y() += i * 45;
+        slime->render_y() = slime->y();
         m_things.emplace_back(slime->id(), slime);
         m_renderables.emplace_back(slime->id(), slime);
         m_collidables.emplace_back(slime->id(), slime);
         m_destroyables.emplace_back(slime->id(), slime);
     }
 
-    auto *hero = new Hero{ renderer, m_sound };
+    auto *hero       = new Hero{ renderer, m_sound };
+    hero->x()        = 500;
+    hero->render_x() = hero->x();
     m_things.emplace_back(hero->id(), hero);
     m_renderables.emplace_back(hero->id(), hero);
     m_collidables.emplace_back(hero->id(), hero);
@@ -102,13 +106,27 @@ void Game::render(Renderer &renderer, const RenderEvent &event)
     for (const auto &[id, thing] : m_things)
     {
         thing->update(*this, event.seconds_elapsed);
+
+        thing->x() = std::clamp(thing->x(), 0.F, m_map->width() - thing->width());
+        thing->y() = std::clamp(thing->y(), 0.F, m_map->height() - thing->height());
     }
 
-    m_map->update(m_hero->x(), m_hero->y());
+    const auto [offset_x, offset_y] = m_map->update(m_hero->render_x(), m_hero->render_y());
     m_map->render();
 
     for (const auto &[id, renderable] : m_renderables)
     {
+        renderable->render_x() = renderable->render_x() + offset_x;
+        renderable->render_y() = renderable->render_y() + offset_y;
+
+        if (id == m_hero->id())
+        {
+            m_hero->render_x() =
+                std::clamp(m_hero->render_x(), 0.F, renderer.width() - m_hero->width());
+            m_hero->render_y() =
+                std::clamp(m_hero->render_y(), 0.F, renderer.height() - m_hero->height());
+        }
+
         renderable->render(renderer);
     }
 
