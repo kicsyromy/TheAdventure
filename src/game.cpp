@@ -17,7 +17,7 @@ void Game::load_assets(Renderer &renderer)
     m_bg_music_id = m_sound.load_music(resource_world_bg, resource_world_bg_size);
     m_sound.play_music(m_bg_music_id);
 
-    for (int i = 0; i < 5; ++i)
+    for (int i = 0; i < 0; ++i)
     {
         auto *slime = new Slime{ renderer, m_sound };
         slime->x() += i * 64;
@@ -107,8 +107,8 @@ void Game::render(Renderer &renderer, const RenderEvent &event)
     {
         thing->update(*this, event.seconds_elapsed);
 
-        thing->x() = std::clamp(thing->x(), 0.F, m_map->width() - thing->width());
-        thing->y() = std::clamp(thing->y(), 0.F, m_map->height() - thing->height());
+        thing->x() = std::clamp(thing->x(), 0.F, m_map->width() - thing->width() / 2.F);
+        thing->y() = std::clamp(thing->y(), 0.F, m_map->height() - thing->height() / 2.F);
     }
 
     const auto [offset_x, offset_y] = m_map->update(m_hero->render_x(), m_hero->render_y());
@@ -122,9 +122,9 @@ void Game::render(Renderer &renderer, const RenderEvent &event)
         if (id == m_hero->id())
         {
             m_hero->render_x() =
-                std::clamp(m_hero->render_x(), 0.F, renderer.width() - m_hero->width());
+                std::clamp(m_hero->render_x(), 0.F, static_cast<float>(renderer.width()));
             m_hero->render_y() =
-                std::clamp(m_hero->render_y(), 0.F, renderer.height() - m_hero->height());
+                std::clamp(m_hero->render_y(), 0.F, static_cast<float>(renderer.height()));
         }
 
         renderable->render(renderer);

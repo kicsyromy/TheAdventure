@@ -10,17 +10,18 @@ Sprite::Sprite(const std::uint8_t *data, std::size_t size, Renderer &renderer)
 
 void Sprite::render(Renderer &renderer)
 {
-    renderer.draw_image(m_image_id,
-                        0,
-                        0,
-                        static_cast<std::int32_t>(std::round(m_pos_x)),
-                        static_cast<std::int32_t>(std::round(m_pos_y)),
-                        false,
-                        false,
-                        m_width,
-                        m_height,
-                        m_width,
-                        m_height);
+    renderer.draw_image(
+        m_image_id,
+        0,
+        0,
+        static_cast<std::int32_t>(std::round(m_pos_x + static_cast<float>(m_width) / 2.F)),
+        static_cast<std::int32_t>(std::round(m_pos_y + static_cast<float>(m_height) / 2.F)),
+        false,
+        false,
+        m_width,
+        m_height,
+        m_width,
+        m_height);
 }
 
 float &Sprite::x()

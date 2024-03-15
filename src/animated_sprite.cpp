@@ -1,6 +1,7 @@
 #include "animated_sprite.h"
 
 #include <cmath>
+#include <iostream>
 
 void AnimatedSprite::render(Renderer &renderer)
 {
@@ -11,17 +12,26 @@ void AnimatedSprite::render(Renderer &renderer)
         m_last_frame_time = now;
     }
 
+    const auto x = this->x() - static_cast<float>(m_frame_size) / 2.F;
+    const auto y = this->y() - static_cast<float>(m_frame_size) / 2.F;
+
     renderer.draw_image(m_image_id,
                         m_current_frame * m_frame_size,
                         m_sprite_set * m_frame_size,
-                        static_cast<std::int32_t>(std::round(x())),
-                        static_cast<std::int32_t>(std::round(y())),
+                        static_cast<std::int32_t>(std::round(x)),
+                        static_cast<std::int32_t>(std::round(y)),
                         m_flip,
                         false,
                         m_frame_size,
                         m_frame_size,
                         m_frame_size,
                         m_frame_size);
+
+    //    renderer.set_color({ 255, 0, 0, 255 });
+    //    renderer.fill_rect(
+    //        static_cast<std::int32_t>(std::round(x + static_cast<float>(m_frame_size) / 2.F
+    //        - 2.F)), static_cast<std::int32_t>(std::round(y + static_cast<float>(m_frame_size)
+    //        / 2.F - 2.F)), 4, 4);
 }
 
 void AnimatedSprite::set_sprite_set(std::int32_t sprite_set, bool flip)
