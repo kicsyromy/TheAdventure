@@ -221,10 +221,10 @@ void Hero::on_key_released(const KeyReleaseEvent &event)
 
 float Hero::c_x() const
 {
-    return IThing::x();
+    return m_sprite.x();
 }
 
 float Hero::c_y() const
 {
-    return IThing::y();
+    return m_sprite.y();
 }

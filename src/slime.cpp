@@ -207,9 +207,9 @@ bool Slime::should_be_destroyed()
 
 float Slime::c_x() const
 {
-    return IThing::x();
+    return m_sprite.x();
 }
 float Slime::c_y() const
 {
-    return IThing::y();
+    return m_sprite.y();
 }

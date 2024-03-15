@@ -159,15 +159,15 @@ void Game::render(Renderer &renderer, const RenderEvent &event)
         }
     }
 
-    // for (const auto &collidable : colliding)
-    // {
-    //     collidable->render_collision_box(renderer, true);
-    // }
-
-    // for (const auto &collidable : not_colliding)
-    // {
-    //     collidable->render_collision_box(renderer, false);
-    // }
+    //    for (const auto &collidable : colliding)
+    //    {
+    //        collidable->render_collision_box(renderer, true);
+    //    }
+    //
+    //    for (const auto &collidable : not_colliding)
+    //    {
+    //        collidable->render_collision_box(renderer, false);
+    //    }
 
     fps_timer += event.seconds_elapsed;
     total_seconds_elapsed += event.seconds_elapsed;
