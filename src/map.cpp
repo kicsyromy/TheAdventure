@@ -103,9 +103,8 @@ Map::TileType Map::pos(std::size_t i, std::size_t j) const
     return m_tiles[i * m_width + j];
 }
 
-std::pair<float, float> Map::update(float hero_x, float hero_y)
+std::pair<float, float> Map::update(float hero_x, float hero_y, float speed, float attenuation)
 {
-    std::cerr << "X: " << hero_x << " Y: " << hero_y << '\n';
     static constexpr int SCROLL_THRESHOLD = 100;
 
     const auto window_width  = m_renderer.width();
@@ -116,26 +115,24 @@ std::pair<float, float> Map::update(float hero_x, float hero_y)
 
     if ((hero_x > window_width - SCROLL_THRESHOLD) && (m_viewport.x + m_viewport.w < m_width))
     {
-        m_viewport.x += 1;
-        offset_x = static_cast<float>(-TILE_SRC_SIZE);
+        m_viewport.x += (speed * attenuation) / TILE_SRC_SIZE;
+        offset_x = -speed * attenuation;
     }
-
-    if ((hero_x < SCROLL_THRESHOLD) && (m_viewport.x > 0))
+    else if ((hero_x < SCROLL_THRESHOLD) && (m_viewport.x > 0))
     {
-        m_viewport.x -= 1;
-        offset_x = static_cast<float>(TILE_SRC_SIZE);
+        m_viewport.x -= (speed * attenuation) / TILE_SRC_SIZE;
+        offset_x = speed * attenuation;
     }
 
     if ((hero_y > window_height - SCROLL_THRESHOLD) && (m_viewport.y + m_viewport.h < m_height))
     {
-        m_viewport.y += 1;
-        offset_y = static_cast<float>(-TILE_SRC_SIZE);
+        m_viewport.y += (speed * attenuation) / TILE_SRC_SIZE;
+        offset_y = -speed * attenuation;
     }
-
-    if ((hero_y < SCROLL_THRESHOLD) && (m_viewport.y > 0))
+    else if ((hero_y < SCROLL_THRESHOLD) && (m_viewport.y > 0))
     {
-        m_viewport.y -= 1;
-        offset_y = static_cast<float>(TILE_SRC_SIZE);
+        m_viewport.y -= (speed * attenuation) / TILE_SRC_SIZE;
+        offset_y = speed * attenuation;
     }
 
     return { offset_x, offset_y };

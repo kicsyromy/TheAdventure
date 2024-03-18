@@ -111,7 +111,8 @@ void Game::render(Renderer &renderer, const RenderEvent &event)
         thing->y() = std::clamp(thing->y(), 0.F, m_map->height() - thing->height() / 2.F);
     }
 
-    const auto [offset_x, offset_y] = m_map->update(m_hero->render_x(), m_hero->render_y());
+    const auto [offset_x, offset_y] =
+        m_map->update(m_hero->render_x(), m_hero->render_y(), 80.F, event.seconds_elapsed);
     m_map->render();
 
     for (const auto &[id, renderable] : m_renderables)

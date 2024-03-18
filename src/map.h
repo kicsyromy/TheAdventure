@@ -16,11 +16,19 @@ public:
         Grass4,
     };
 
+    struct Viewport
+    {
+        float        x;
+        float        y;
+        std::int32_t w;
+        std::int32_t h;
+    };
+
 public:
     explicit Map(Renderer &renderer);
 
     TileType                pos(std::size_t i, std::size_t j) const;
-    std::pair<float, float> update(float x_px, float y_px);
+    std::pair<float, float> update(float x_px, float y_px, float speed, float attenuation);
     void                    render();
 
     float width() const;
@@ -34,6 +42,5 @@ private:
     std::vector<TileType> m_tiles;
 
     std::vector<std::int32_t> m_images;
-
-    SDL_Rect m_viewport;
+    Viewport                  m_viewport;
 };
