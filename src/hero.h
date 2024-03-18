@@ -31,6 +31,8 @@ public:
     Hero(Renderer &renderer, Sound &sound);
 
     void  attack();
+    float speed() const;
+
     bool  is_attacking() const override;
     float attack_power() const override;
 
@@ -48,6 +50,7 @@ private:
 private:
     AnimatedSprite m_sprite;
     Orientation    m_orientation{ Orientation::Down };
+    float          m_speed{ 80.F };
 
     bool         m_is_attacking{ false };
     bool         m_is_moving{ false };

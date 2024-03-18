@@ -3,25 +3,22 @@
 #include "resources.h"
 
 #include <array>
+#include <cstdint>
 #include <cstring>
 #include <exception>
 #include <fstream>
 #include <iostream>
+#include <iterator>
 #include <string>
 #include <string_view>
+#include <vector>
 
-static constexpr std::int32_t TILE_SRC_SIZE = 16;
-static constexpr std::int32_t TILE_DST_SIZE = 16;
+static constexpr std::int32_t TILE_SIZE = 16;
 
 Map::Map(Renderer &renderer)
   : m_renderer{ renderer }
-  , m_viewport({ 0, 0, renderer.width() / TILE_SRC_SIZE, renderer.height() / TILE_SRC_SIZE })
+  , m_viewport({ 0, 0, renderer.width(), renderer.height() })
 {
-    m_images.push_back(m_renderer.load_image(resource_grass_001, resource_grass_001_size));
-    m_images.push_back(m_renderer.load_image(resource_grass_002, resource_grass_002_size));
-    m_images.push_back(m_renderer.load_image(resource_grass_003, resource_grass_003_size));
-    m_images.push_back(m_renderer.load_image(resource_grass_004, resource_grass_004_size));
-
     auto map_file = std::ifstream{ "dist/map01.tmx" };
     if (!map_file.is_open())
     {
@@ -44,14 +41,14 @@ Map::Map(Renderer &renderer)
                 if (str == "width")
                 {
                     auto width_val = std::string_view{ line.c_str() + i + 7 };
-                    m_width        = std::stoi(std::string{ width_val });
+                    m_width        = std::stoi(std::string{ width_val }) * TILE_SIZE;
                     m_viewport.w   = std::min(static_cast<int>(m_width), m_viewport.w);
                 }
 
                 if (str == "heigh")
                 {
                     auto height_val = std::string_view{ line.c_str() + i + 8 };
-                    m_height        = std::stoi(std::string{ height_val });
+                    m_height        = std::stoi(std::string{ height_val }) * TILE_SIZE;
                     m_viewport.h    = std::min(static_cast<int>(m_height), m_viewport.h);
                 }
             }
@@ -96,11 +93,35 @@ Map::Map(Renderer &renderer)
 
         token = std::strtok(nullptr, ",");
     }
+
+    auto map_img_file = std::ifstream{ "dist/map01.png", std::ios::binary };
+    if (!map_img_file.is_open())
+    {
+        std::cerr << "Failed to open dist/map01.png" << '\n';
+        std::terminate();
+    }
+
+    auto map_img_data = std::vector<std::uint8_t>{ std::istreambuf_iterator<char>{ map_img_file },
+                                                   std::istreambuf_iterator<char>{} };
+    std::int32_t map_img_width;
+    std::int32_t map_img_height;
+    m_map_background = m_renderer.load_image(map_img_data.data(),
+                                             map_img_data.size(),
+                                             &map_img_width,
+                                             &map_img_height);
+
+    if (map_img_width != m_width || map_img_height != m_height)
+    {
+        std::cerr << ".tmx file and .png have inconsistent sizes!"
+                  << "TMX: W: " << m_width << " H: " << m_height << " PNG: W: " << map_img_width
+                  << " H: " << map_img_height << '\n';
+        std::terminate();
+    }
 }
 
 Map::TileType Map::pos(std::size_t i, std::size_t j) const
 {
-    return m_tiles[i * m_width + j];
+    return m_tiles[(i / TILE_SIZE) * (m_width / TILE_SIZE) + (j / TILE_SIZE)];
 }
 
 std::pair<float, float> Map::update(float hero_x, float hero_y, float speed, float attenuation)
@@ -115,23 +136,23 @@ std::pair<float, float> Map::update(float hero_x, float hero_y, float speed, flo
 
     if ((hero_x > window_width - SCROLL_THRESHOLD) && (m_viewport.x + m_viewport.w < m_width))
     {
-        m_viewport.x += (speed * attenuation) / TILE_SRC_SIZE;
+        m_viewport.x += speed * attenuation;
         offset_x = -speed * attenuation;
     }
     else if ((hero_x < SCROLL_THRESHOLD) && (m_viewport.x > 0))
     {
-        m_viewport.x -= (speed * attenuation) / TILE_SRC_SIZE;
+        m_viewport.x -= speed * attenuation;
         offset_x = speed * attenuation;
     }
 
     if ((hero_y > window_height - SCROLL_THRESHOLD) && (m_viewport.y + m_viewport.h < m_height))
     {
-        m_viewport.y += (speed * attenuation) / TILE_SRC_SIZE;
+        m_viewport.y += speed * attenuation;
         offset_y = -speed * attenuation;
     }
     else if ((hero_y < SCROLL_THRESHOLD) && (m_viewport.y > 0))
     {
-        m_viewport.y -= (speed * attenuation) / TILE_SRC_SIZE;
+        m_viewport.y -= speed * attenuation;
         offset_y = speed * attenuation;
     }
 
@@ -140,32 +161,25 @@ std::pair<float, float> Map::update(float hero_x, float hero_y, float speed, flo
 
 void Map::render()
 {
-    for (std::size_t i = m_viewport.y; i < m_viewport.h + m_viewport.y; ++i)
-    {
-        for (std::size_t j = m_viewport.x; j < m_viewport.w + m_viewport.x; ++j)
-        {
-            const auto tile_type = pos(i, j);
-            m_renderer.draw_image(m_images[static_cast<std::size_t>(tile_type) - 1],
-                                  0,
-                                  0,
-                                  (j - m_viewport.x) * TILE_DST_SIZE,
-                                  (i - m_viewport.y) * TILE_DST_SIZE,
-                                  false,
-                                  false,
-                                  TILE_SRC_SIZE,
-                                  TILE_SRC_SIZE,
-                                  TILE_DST_SIZE,
-                                  TILE_DST_SIZE);
-        }
-    }
+    m_renderer.draw_image(m_map_background,
+                          static_cast<std::int32_t>(m_viewport.x),
+                          static_cast<std::int32_t>(m_viewport.y),
+                          0,
+                          0,
+                          false,
+                          false,
+                          m_viewport.w,
+                          m_viewport.h,
+                          m_renderer.width(),
+                          m_renderer.height());
 }
 
 float Map::width() const
 {
-    return static_cast<float>(m_width * TILE_SRC_SIZE);
+    return static_cast<float>(m_width);
 }
 
 float Map::height() const
 {
-    return static_cast<float>(m_height * TILE_SRC_SIZE);
+    return static_cast<float>(m_height);
 }

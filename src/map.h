@@ -41,6 +41,6 @@ private:
     std::size_t           m_height;
     std::vector<TileType> m_tiles;
 
-    std::vector<std::int32_t> m_images;
-    Viewport                  m_viewport;
+    std::int32_t m_map_background;
+    Viewport     m_viewport;
 };

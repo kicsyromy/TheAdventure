@@ -13,10 +13,6 @@ set (
         "res/sfx/26_sword_hit_1.mp3"
         "res/sfx/26_sword_hit_2.mp3"
         "res/sfx/26_sword_hit_3.mp3"
-        "res/tilesets/grass_001.png"
-        "res/tilesets/grass_002.png"
-        "res/tilesets/grass_003.png"
-        "res/tilesets/grass_004.png"
 )
 
 set (RES_FIXED_PATH)
