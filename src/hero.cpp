@@ -128,8 +128,8 @@ void Hero::update(Game &game, float attenuation)
 
     if (game.is_key_pressed(KeyCode::Up))
     {
-        y() -= 80.F * attenuation;
-        m_sprite.y() -= 80.F * attenuation;
+        y() -= m_speed * attenuation;
+        m_sprite.y() -= m_speed * attenuation;
         m_sprite.set_sprite_set(SpriteSet::RunningUp);
         m_orientation = Orientation::Up;
 
@@ -138,8 +138,8 @@ void Hero::update(Game &game, float attenuation)
 
     if (game.is_key_pressed(KeyCode::Down))
     {
-        y() += 80.F * attenuation;
-        m_sprite.y() += 80.F * attenuation;
+        y() += m_speed * attenuation;
+        m_sprite.y() += m_speed * attenuation;
         m_sprite.set_sprite_set(SpriteSet::RunningDown);
         m_orientation = Orientation::Down;
 
@@ -148,8 +148,8 @@ void Hero::update(Game &game, float attenuation)
 
     if (game.is_key_pressed(KeyCode::Left))
     {
-        x() -= 80.F * attenuation;
-        m_sprite.x() -= 80.F * attenuation;
+        x() -= m_speed * attenuation;
+        m_sprite.x() -= m_speed * attenuation;
         m_sprite.set_sprite_set(SpriteSet::RunningRight, true);
         m_orientation = Orientation::Left;
 
@@ -158,8 +158,8 @@ void Hero::update(Game &game, float attenuation)
 
     if (game.is_key_pressed(KeyCode::Right))
     {
-        x() += 80.F * attenuation;
-        m_sprite.x() += 80.F * attenuation;
+        x() += m_speed * attenuation;
+        m_sprite.x() += m_speed * attenuation;
         m_sprite.set_sprite_set(SpriteSet::RunningRight);
         m_orientation = Orientation::Right;
 
