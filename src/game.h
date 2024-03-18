@@ -10,6 +10,7 @@
 #include "sprite.h"
 
 #include <cstdint>
+#include <memory>
 #include <optional>
 #include <random>
 #include <unordered_map>
@@ -83,9 +84,8 @@ private:
 
     std::int32_t m_bg_music_id{ -1 };
 
-    std::unordered_map<std::int32_t, std::unique_ptr<IThing>> m_things;
-
     Hero *m_hero{ nullptr };
 
+    std::unordered_map<std::int32_t, std::unique_ptr<IThing>>          m_things;
     std::unordered_map<std::int32_t, std::unordered_set<std::int32_t>> m_landed_attacks;
 };
