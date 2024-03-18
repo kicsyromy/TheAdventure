@@ -1,5 +1,11 @@
 #include "game.h"
 #include "events.h"
+#include "i_attacker.h"
+#include "i_collidable.h"
+#include "i_destroyable.h"
+#include "i_input_handler.h"
+#include "i_renderable.h"
+#include "i_thing.h"
 #include "renderer.h"
 #include "resources.h"
 
@@ -24,20 +30,13 @@ void Game::load_assets(Renderer &renderer)
         slime->render_x() = slime->x();
         slime->y() += i * 45;
         slime->render_y() = slime->y();
-        m_things.emplace_back(slime->id(), slime);
-        m_renderables.emplace_back(slime->id(), slime);
-        m_collidables.emplace_back(slime->id(), slime);
-        m_destroyables.emplace_back(slime->id(), slime);
+        m_things.emplace(slime->id(), slime);
     }
 
     auto *hero       = new Hero{ renderer, m_sound };
     hero->x()        = 500;
     hero->render_x() = hero->x();
-    m_things.emplace_back(hero->id(), hero);
-    m_renderables.emplace_back(hero->id(), hero);
-    m_collidables.emplace_back(hero->id(), hero);
-    m_input_handlers.emplace_back(hero->id(), hero);
-    m_attackers.emplace_back(hero->id(), hero);
+    m_things.emplace(hero->id(), hero);
 
     m_hero = hero;
 }
@@ -47,60 +46,27 @@ void Game::render(Renderer &renderer, const RenderEvent &event)
     renderer.set_color({ 0, 0, 0, 255 });
     renderer.clear();
 
-    std::vector<std::size_t> destroyed_indices;
-    for (std::size_t i = 0; i < m_destroyables.size(); ++i)
+    const auto [offset_x, offset_y] = m_map->update(m_hero->render_x(),
+                                                    m_hero->render_y(),
+                                                    m_hero->speed(),
+                                                    event.seconds_elapsed);
+    m_map->render();
+
+    std::vector<std::size_t> destroyed_ids;
+    for (const auto &[id, thing] : m_things)
     {
-        if (m_destroyables[i].second->should_be_destroyed())
+        if (auto *destroyable = dynamic_cast<IDestroyable *>(thing.get()))
         {
-            const auto id = m_destroyables[i].first;
-
-            destroyed_indices.push_back(i);
-
-            auto render_it =
-                std::find_if(m_renderables.begin(), m_renderables.end(), [id](auto &renderable) {
-                    return renderable.first == id;
-                });
-            if (render_it != m_renderables.end())
+            if (destroyable->should_be_destroyed())
             {
-                m_renderables.erase(render_it);
+                destroyed_ids.push_back(id);
             }
-
-            auto collide_it =
-                std::find_if(m_collidables.begin(), m_collidables.end(), [id](auto &collidable) {
-                    return collidable.first == id;
-                });
-            if (collide_it != m_collidables.end())
-            {
-                m_collidables.erase(collide_it);
-            }
-
-            auto input_it =
-                std::find_if(m_input_handlers.begin(),
-                             m_input_handlers.end(),
-                             [id](auto &input_handler) { return input_handler.first == id; });
-            if (input_it != m_input_handlers.end())
-            {
-                m_input_handlers.erase(input_it);
-            }
-
-            auto attack_it = std::find_if(m_attackers.begin(),
-                                          m_attackers.end(),
-                                          [id](auto &attacker) { return attacker.first == id; });
-            if (attack_it != m_attackers.end())
-            {
-                m_attackers.erase(attack_it);
-            }
-
-            auto thing_it = std::find_if(m_things.begin(), m_things.end(), [id](auto &thing) {
-                return thing.first == id;
-            });
-            m_things.erase(thing_it);
         }
     }
 
-    for (auto i = 0; i < destroyed_indices.size(); ++i)
+    for (auto i = 0; i < destroyed_ids.size(); ++i)
     {
-        m_destroyables.erase(m_destroyables.begin() + destroyed_indices[i] - i);
+        m_things.erase(destroyed_ids[i]);
     }
 
     for (const auto &[id, thing] : m_things)
@@ -109,55 +75,59 @@ void Game::render(Renderer &renderer, const RenderEvent &event)
 
         thing->x() = std::clamp(thing->x(), 0.F, m_map->width() - thing->width() / 2.F);
         thing->y() = std::clamp(thing->y(), 0.F, m_map->height() - thing->height() / 2.F);
-    }
 
-    const auto [offset_x, offset_y] = m_map->update(m_hero->render_x(),
-                                                    m_hero->render_y(),
-                                                    m_hero->speed(),
-                                                    event.seconds_elapsed);
-    m_map->render();
-
-    for (const auto &[id, renderable] : m_renderables)
-    {
-        renderable->render_x() = renderable->render_x() + offset_x;
-        renderable->render_y() = renderable->render_y() + offset_y;
-
-        if (id == m_hero->id())
+        if (auto *renderable = dynamic_cast<IRenderable *>(thing.get()))
         {
-            m_hero->render_x() =
-                std::clamp(m_hero->render_x(), 0.F, static_cast<float>(renderer.width()));
-            m_hero->render_y() =
-                std::clamp(m_hero->render_y(), 0.F, static_cast<float>(renderer.height()));
-        }
+            renderable->render_x() = renderable->render_x() + offset_x;
+            renderable->render_y() = renderable->render_y() + offset_y;
 
-        renderable->render(renderer);
+            if (id == m_hero->id())
+            {
+                m_hero->render_x() =
+                    std::clamp(m_hero->render_x(), 0.F, static_cast<float>(renderer.width()));
+                m_hero->render_y() =
+                    std::clamp(m_hero->render_y(), 0.F, static_cast<float>(renderer.height()));
+            }
+            else
+            {
+                renderable->render(renderer);
+            }
+        }
     }
+
+    m_hero->render(renderer);
 
     std::unordered_set<ICollidable *> colliding;
+    colliding.reserve(m_things.size());
     std::unordered_set<ICollidable *> not_colliding;
-    not_colliding.reserve(m_collidables.size());
-    for (std::size_t i = 0; i < m_collidables.size(); ++i)
+    not_colliding.reserve(m_things.size());
+    std::vector<std::pair<std::int32_t, ICollidable *>> collidables;
+    collidables.reserve(m_things.size());
+    for (const auto &[id, thing] : m_things)
     {
-        not_colliding.insert(m_collidables[i].second);
-    }
-
-    for (std::size_t i = 0; i < m_collidables.size() - 1; ++i)
-    {
-        for (std::size_t j = i + 1; j < m_collidables.size(); ++j)
+        if (auto *collidable = dynamic_cast<ICollidable *>(thing.get()))
         {
-            if (m_collidables[i].second->is_colliding(*m_collidables[j].second))
+            not_colliding.insert(collidable);
+            collidables.emplace_back(id, collidable);
+        }
+    }
+    for (std::size_t i = 0; i < collidables.size() - 1; ++i)
+    {
+        for (std::size_t j = i + 1; j < collidables.size(); ++j)
+        {
+            if (collidables[i].second->is_colliding(*collidables[j].second))
             {
-                const auto i_id = m_collidables[i].first;
-                const auto j_id = m_collidables[j].first;
+                const auto i_id = collidables[i].first;
+                const auto j_id = collidables[j].first;
 
                 try_attack(i_id, j_id);
                 try_attack(j_id, i_id);
 
-                colliding.insert(m_collidables[i].second);
-                colliding.insert(m_collidables[j].second);
+                colliding.insert(collidables[i].second);
+                colliding.insert(collidables[j].second);
 
-                not_colliding.erase(m_collidables[i].second);
-                not_colliding.erase(m_collidables[j].second);
+                not_colliding.erase(collidables[i].second);
+                not_colliding.erase(collidables[j].second);
             }
         }
     }
@@ -225,17 +195,23 @@ void Game::on_mouse_wheel(const MouseWheelEvent &event)
 
 void Game::on_key_pressed(const KeyPressEvent &event)
 {
-    for (auto &[id, input_handler] : m_input_handlers)
+    for (auto &[id, thing] : m_things)
     {
-        input_handler->on_key_pressed(event);
+        if (auto *input_handler = dynamic_cast<IInputHandler *>(thing.get()))
+        {
+            input_handler->on_key_pressed(event);
+        }
     }
 }
 
 void Game::on_key_released(const KeyReleaseEvent &event)
 {
-    for (auto &[id, input_handler] : m_input_handlers)
+    for (auto &[id, thing] : m_things)
     {
-        input_handler->on_key_released(event);
+        if (auto *input_handler = dynamic_cast<IInputHandler *>(thing.get()))
+        {
+            input_handler->on_key_released(event);
+        }
     }
 }
 
@@ -249,26 +225,28 @@ bool Game::is_key_pressed(KeyCode key_code) const
     return m_keyboard_state[static_cast<std::size_t>(key_code)] != 0;
 }
 
-void Game::try_attack(int32_t thing_id_1, int32_t thing_id_2)
+void Game::try_attack(std::int32_t thing_id_1, std::int32_t thing_id_2)
 {
     // Find out if thing_1 is an attacker
-    const auto attacker_it =
-        std::find_if(m_attackers.begin(), m_attackers.end(), [thing_id_1](auto &attacker) {
-            return attacker.first == thing_id_1;
-        });
-    if (attacker_it != m_attackers.end()) // thing_1 is an attacker
+    const auto attacker_it = m_things.find(thing_id_1);
+    if (attacker_it != m_things.end()) // thing_1 is an attacker
     {
-        if (attacker_it->second->is_attacking()) // thing_1 is attacking
+        const auto *attacker = dynamic_cast<IAttacker *>(attacker_it->second.get());
+        if (attacker != nullptr && attacker->is_attacking()) // thing_1 is attacking
         {
             // We are in an attack phase
 
             // Find out if our target is a destroyable
-            auto dest_it =
-                std::find_if(m_destroyables.begin(),
-                             m_destroyables.end(),
-                             [thing_id_2](auto &dest) { return dest.first == thing_id_2; });
-            if (dest_it != m_destroyables.end()) // Our target is a destroyable
+            auto dest_it = m_things.find(thing_id_2);
+            if (dest_it != m_things.end()) // Our target is a destroyable
+
             {
+                auto *dest = dynamic_cast<IDestroyable *>(dest_it->second.get());
+                if (dest == nullptr)
+                {
+                    return;
+                }
+
                 // Find out if the attacker has already landed an attack on some target
                 auto attack_landed = m_landed_attacks.find(attacker_it->first);
                 if (attack_landed != m_landed_attacks.end()) // The attacker has already
@@ -278,13 +256,14 @@ void Game::try_attack(int32_t thing_id_1, int32_t thing_id_2)
                     // Find out if the attacker has already landed an attack on our
                     // target
                     const auto target_hit = attack_landed->second.find(dest_it->first);
-                    if (target_hit == attack_landed->second.end()) // The attacker has not landed an
-                                                                   // attack on our target
+                    if (target_hit == attack_landed->second.end()) // The attacker has not
+                                                                   // landed an attack on our
+                                                                   // target
                     {
                         // Mark the target as hit in this attack phase
                         attack_landed->second.insert(dest_it->first);
                         // Deal damage to the target
-                        dest_it->second->take_damage(attacker_it->second->attack_power());
+                        dest->take_damage(attacker->attack_power());
                     }
                 }
                 else // The attacker has just started their attack phase
@@ -294,7 +273,7 @@ void Game::try_attack(int32_t thing_id_1, int32_t thing_id_2)
                     m_landed_attacks.emplace(attacker_it->first,
                                              std::unordered_set<int32_t>{ dest_it->first });
                     // Deal damage to the target
-                    dest_it->second->take_damage(attacker_it->second->attack_power());
+                    dest->take_damage(attacker->attack_power());
                 }
             }
         }

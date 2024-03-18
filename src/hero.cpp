@@ -23,7 +23,7 @@ enum SpriteSet
 
 static constexpr std::int32_t MAX_FRAMES            = 6;
 static constexpr std::int32_t ATTACK_FRAMES         = 4;
-static constexpr Rect         DEFAULT_COLLISION_BOX = { 15, 30, 19, 14 };
+static constexpr Rect         DEFAULT_COLLISION_BOX = { -9, 8, 19, 14 };
 
 Hero::Hero(Renderer &renderer, Sound &sound)
   : m_sprite{ resource_player, resource_player_size, renderer }

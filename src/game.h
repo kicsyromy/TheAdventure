@@ -83,12 +83,7 @@ private:
 
     std::int32_t m_bg_music_id{ -1 };
 
-    std::vector<std::pair<std::int32_t, std::unique_ptr<IThing>>> m_things;
-    std::vector<std::pair<std::int32_t, IRenderable *>>           m_renderables;
-    std::vector<std::pair<std::int32_t, ICollidable *>>           m_collidables;
-    std::vector<std::pair<std::int32_t, IInputHandler *>>         m_input_handlers;
-    std::vector<std::pair<std::int32_t, IDestroyable *>>          m_destroyables;
-    std::vector<std::pair<std::int32_t, IAttacker *>>             m_attackers;
+    std::unordered_map<std::int32_t, std::unique_ptr<IThing>> m_things;
 
     Hero *m_hero{ nullptr };
 

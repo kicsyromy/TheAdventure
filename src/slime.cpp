@@ -35,7 +35,7 @@ Slime::Slime(Renderer &renderer, Sound &sound)
     width()  = m_sprite.width() / MAX_FRAMES;
     height() = m_sprite.height() / MAX_FRAMES;
 
-    set_collision_box({ 7, 6, 19, 18 });
+    set_collision_box({ -9, -7, 19, 18 });
 
     m_sprite.set_sprite_set(SpriteSet::IdleRight);
     m_sprite.set_total_frames(MAX_FRAMES, MAX_FRAMES - IDLE_FRAMES);
