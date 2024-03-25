@@ -8,6 +8,8 @@ add_executable(
     game.cpp
     hero.h
     hero.cpp
+    i_aggravatable.cpp
+    i_aggravatable.h
     i_attacker.h
     i_collidable.h
     i_collidable.cpp

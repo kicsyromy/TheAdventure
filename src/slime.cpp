@@ -36,6 +36,7 @@ Slime::Slime(Renderer &renderer, Sound &sound)
     height() = m_sprite.height() / MAX_FRAMES;
 
     set_collision_box({ -9, -7, 19, 18 });
+    set_aggro_area({ -36, -32, 76, 72 });
 
     m_sprite.set_sprite_set(SpriteSet::IdleRight);
     m_sprite.set_total_frames(MAX_FRAMES, MAX_FRAMES - IDLE_FRAMES);
@@ -68,10 +69,22 @@ void Slime::attack()
 
 void Slime::update(Game &game, float attenuation)
 {
-    if (m_is_attacking && m_sprite.current_frame() == ATTACK_FRAMES - 1)
+    if (m_is_attacking)
     {
-        m_is_attacking = false;
+        if (m_sprite.current_frame() == ATTACK_FRAMES - 1)
+        {
+            m_is_attacking = false;
+        }
+        else
+        {
+            return;
+        }
     }
+    //    else if (has_aggro())
+    //    {
+    //        attack();
+    //        return;
+    //    }
 
     const auto now = std::chrono::steady_clock::now();
     if (now - m_last_gen_time >= std::chrono::seconds{ 1 })
@@ -175,6 +188,7 @@ void Slime::update(Game &game, float attenuation)
 
 void Slime::render(Renderer &renderer)
 {
+    render_aggro_area(renderer);
     m_sprite.render(renderer);
 }
 
@@ -205,11 +219,32 @@ bool Slime::should_be_destroyed()
     return m_should_be_destroyed;
 }
 
+bool Slime::is_attacking() const
+{
+    return false;
+}
+
+float Slime::attack_power() const
+{
+    return 0;
+}
+
 float Slime::c_x() const
 {
     return m_sprite.x();
 }
+
 float Slime::c_y() const
+{
+    return m_sprite.y();
+}
+
+float Slime::a_x() const
+{
+    return m_sprite.x();
+}
+
+float Slime::a_y() const
 {
     return m_sprite.y();
 }

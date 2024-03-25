@@ -4,6 +4,7 @@
 #include "events.h"
 #include "i_attacker.h"
 #include "i_collidable.h"
+#include "i_destroyable.h"
 #include "i_input_handler.h"
 #include "i_renderable.h"
 #include "i_thing.h"
@@ -17,6 +18,7 @@ class Hero
   , public IInputHandler
   , public ICollidable
   , public IAttacker
+  , public IDestroyable
 {
 private:
     enum class Orientation
@@ -43,6 +45,9 @@ public:
     void   on_key_pressed(const KeyPressEvent &event) override;
     void   on_key_released(const KeyReleaseEvent &event) override;
 
+    void take_damage(float damage) override;
+    bool should_be_destroyed() override;
+
 private:
     float c_x() const override;
     float c_y() const override;
@@ -55,6 +60,8 @@ private:
     bool         m_is_attacking{ false };
     bool         m_is_moving{ false };
     std::int32_t m_attack_sound_id{ -1 };
+
+    float m_health{ 10.F };
 
     Sound    &m_sound;
     Renderer &m_renderer;

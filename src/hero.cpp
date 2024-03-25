@@ -224,6 +224,16 @@ void Hero::on_key_pressed(const KeyPressEvent &event)
 void Hero::on_key_released(const KeyReleaseEvent &event)
 {}
 
+void Hero::take_damage(float damage)
+{
+    m_health -= damage;
+}
+
+bool Hero::should_be_destroyed()
+{
+    return m_health <= 0.F;
+}
+
 float Hero::c_x() const
 {
     return m_sprite.x();

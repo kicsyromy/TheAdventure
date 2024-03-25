@@ -2,6 +2,8 @@
 
 #include "animated_sprite.h"
 #include "events.h"
+#include "i_aggravatable.h"
+#include "i_attacker.h"
 #include "i_collidable.h"
 #include "i_destroyable.h"
 #include "i_renderable.h"
@@ -16,6 +18,8 @@ class Slime
   , public IRenderable
   , public ICollidable
   , public IDestroyable
+  , public IAttacker
+  , public IAggravatable
 {
 private:
     enum class Orientation
@@ -45,9 +49,15 @@ public:
     void take_damage(float damage) override;
     bool should_be_destroyed() override;
 
+    bool  is_attacking() const override;
+    float attack_power() const override;
+
 private:
     float c_x() const override;
     float c_y() const override;
+
+    float a_x() const override;
+    float a_y() const override;
 
 private:
     AnimatedSprite m_sprite;

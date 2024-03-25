@@ -21,22 +21,25 @@ void Game::load_assets(Renderer &renderer)
     m_map.emplace(renderer);
 
     m_bg_music_id = m_sound.load_music(resource_world_bg, resource_world_bg_size);
-    m_sound.play_music(m_bg_music_id);
+    //    m_sound.play_music(m_bg_music_id);
 
-    for (int i = 0; i < 10; ++i)
+    auto *hero       = new Hero{ renderer, m_sound };
+    hero->x()        = 500;
+    hero->render_x() = hero->x();
+    m_things.emplace(hero->id(), hero);
+
+    for (int i = 0; i < 1; ++i)
     {
         auto *slime = new Slime{ renderer, m_sound };
         slime->x() += i * 64;
         slime->render_x() = slime->x();
         slime->y() += i * 45;
         slime->render_y() = slime->y();
+
+        slime->set_aggravated_by(*hero);
+
         m_things.emplace(slime->id(), slime);
     }
-
-    auto *hero       = new Hero{ renderer, m_sound };
-    hero->x()        = 500;
-    hero->render_x() = hero->x();
-    m_things.emplace(hero->id(), hero);
 
     m_hero = hero;
 }
